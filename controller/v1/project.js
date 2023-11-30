@@ -1,0 +1,77 @@
+const asyncHandler = require("../../middleware/async");
+const Comman = require("../../middleware/comman");
+const bcrypt = require("bcrypt");
+const Pagination = require("../../middleware/pagination");
+const Project = require("../../model/project");
+var Model = Project;
+
+// create new project
+exports.add = asyncHandler(async (req, res, next) => {
+  try {
+    const checkPrefix = await Model.findOne({ prefix: req.body.prefix });
+    if (checkPrefix) {
+      return Comman.setResponse(res, 409, false, "This prefix already exists.");
+    }
+    req.body.managerId = req.user.id;
+    const project = await Model.create(req.body);
+    return Comman.setResponse(
+      res,
+      201,
+      true,
+      "Project added successfully.",
+      project
+    );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// get single project
+exports.getProjectById = asyncHandler(async (req, res, next) => {
+  try {
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Get client successfully.",
+      res.record
+    );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// get multiple project
+exports.getProjects = asyncHandler(async (req, res, next) => {
+  try {
+    const aggregate = [];
+    const result = await Pagination(req, res, Model, aggregate);
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Get managers successfully.",
+      result
+    );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});

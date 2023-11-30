@@ -1,0 +1,41 @@
+var express = require("express");
+var router = express.Router();
+const {
+  add,
+  getClients,
+  getClientById,
+  editClient,
+} = require("../controller/v1/client");
+const Schema = require("../validationSchema/clientSchema");
+const errorHandal = require("../middleware/comman").errorHandal;
+const { getRecord } = require("../middleware/getRecord");
+const Client = require("../model/client");
+const { authenticateToken } = require("../middleware/verifyToken");
+var Model = Client;
+
+router.post("/add", authenticateToken, Schema.addSchema, errorHandal, add);
+
+// multiple get client
+router.get("/getClients", authenticateToken, getClients);
+
+// single get client
+router.get(
+  "/:id",
+  authenticateToken,
+  Schema.getClientByIdSchema,
+  errorHandal,
+  getRecord(Model),
+  getClientById
+);
+
+// edit client
+router.patch(
+  "/:id",
+  authenticateToken,
+  Schema.getClientByIdSchema,
+  errorHandal,
+  getRecord(Model),
+  editClient
+);
+
+module.exports = router;
