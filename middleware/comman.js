@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const Client = require("../model/client");
 let Comman = {};
+
 Comman.setResponse = (res, code, flag, message, data = {}) => {
   let statusCode = code;
   let responseStatus = flag;

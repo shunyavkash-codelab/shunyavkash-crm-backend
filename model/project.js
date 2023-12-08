@@ -45,6 +45,10 @@ const projectSchema = new mongoose.Schema(
       unique: true,
       required: true,
     },
+    status: {
+      type: String, // initial, inProgress, completed
+      default: "initial",
+    },
   },
 
   { timestamps: true, versionKey: false }
