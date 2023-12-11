@@ -3,6 +3,7 @@ const Comman = require("../../middleware/comman");
 const bcrypt = require("bcrypt");
 const Pagination = require("../../middleware/pagination");
 const Project = require("../../model/project");
+const { default: mongoose } = require("mongoose");
 var Model = Project;
 
 // create new project
@@ -35,12 +36,57 @@ exports.add = asyncHandler(async (req, res, next) => {
 // get single project
 exports.getProjectById = asyncHandler(async (req, res, next) => {
   try {
+    let project = await Model.aggregate([
+      {
+        $match: { _id: new mongoose.Types.ObjectId(req.params.id) },
+      },
+      {
+        $lookup: {
+          from: "managers",
+          localField: "managerId",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+          as: "managerName",
+        },
+      },
+      {
+        $lookup: {
+          from: "clients",
+          localField: "clientId",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+          as: "clientName",
+        },
+      },
+      {
+        $addFields: {
+          clientName: {
+            $first: "$clientName.name",
+          },
+          managerName: {
+            $first: "$managerName.name",
+          },
+        },
+      },
+    ]);
     return Comman.setResponse(
       res,
       200,
       true,
       "Get client successfully.",
-      res.record
+      project
     );
   } catch (error) {
     console.log(error);
@@ -56,7 +102,48 @@ exports.getProjectById = asyncHandler(async (req, res, next) => {
 // get multiple project
 exports.getProjects = asyncHandler(async (req, res, next) => {
   try {
-    const aggregate = [];
+    const aggregate = [
+      {
+        $lookup: {
+          from: "managers",
+          localField: "managerId",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+          as: "managerName",
+        },
+      },
+      {
+        $lookup: {
+          from: "clients",
+          localField: "clientId",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+          as: "clientName",
+        },
+      },
+      {
+        $addFields: {
+          clientName: {
+            $first: "$clientName.name",
+          },
+          managerName: {
+            $first: "$managerName.name",
+          },
+        },
+      },
+    ];
     const result = await Pagination(req, res, Model, aggregate);
     return Comman.setResponse(
       res,

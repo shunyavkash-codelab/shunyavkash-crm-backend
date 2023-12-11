@@ -3,7 +3,7 @@ const Comman = require("../../middleware/comman");
 const Manager = require("../../model/manager");
 
 // get dashbord data like (total manager, total clients, total project, total invoice)
-exports.dashbord = asyncHandler(async (req, res, next) => {
+exports.dashboard = asyncHandler(async (req, res, next) => {
   try {
     const dashboard = await Manager.aggregate([
       {
@@ -113,7 +113,13 @@ exports.dashbord = asyncHandler(async (req, res, next) => {
         },
       },
     ]);
-    return Comman.setResponse(res, 200, true, "Dashbord detile", dashboard[0]);
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Dashboard details",
+      dashboard[0]
+    );
   } catch (error) {
     console.log(error);
     return Comman.setResponse(

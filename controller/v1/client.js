@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
@@ -46,6 +47,7 @@ exports.add = asyncHandler(async (req, res, next) => {
       mobileCode: req.body.mobileCode,
       mobileNumber: req.body.mobileNumber,
       address: req.body.address,
+      managerId: req.user._id,
     };
     const client = await Model.create(obj);
     return Comman.setResponse(
@@ -69,12 +71,39 @@ exports.add = asyncHandler(async (req, res, next) => {
 // get single client
 exports.getClientById = asyncHandler(async (req, res, next) => {
   try {
+    let client = await Model.aggregate([
+      {
+        $match: { _id: new mongoose.Types.ObjectId(req.params.id) },
+      },
+      {
+        $lookup: {
+          from: "managers",
+          localField: "managerId",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+          as: "managerName",
+        },
+      },
+      {
+        $addFields: {
+          managerName: {
+            $first: "$managerName.name",
+          },
+        },
+      },
+    ]);
     return Comman.setResponse(
       res,
       200,
       true,
       "Get client successfully.",
-      res.record
+      client
     );
   } catch (error) {
     console.log(error);
@@ -90,7 +119,30 @@ exports.getClientById = asyncHandler(async (req, res, next) => {
 // get multiple client
 exports.getClients = asyncHandler(async (req, res, next) => {
   try {
-    const aggregate = [];
+    const aggregate = [
+      {
+        $lookup: {
+          from: "managers",
+          localField: "managerId",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+          as: "managerName",
+        },
+      },
+      {
+        $addFields: {
+          managerName: {
+            $first: "$managerName.name",
+          },
+        },
+      },
+    ];
     const result = await Pagination(req, res, Model, aggregate);
     return Comman.setResponse(
       res,
