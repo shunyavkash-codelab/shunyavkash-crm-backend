@@ -16,7 +16,7 @@ var Model = Project;
 router.post("/add", Schema.addSchema, authenticateToken, add);
 
 // multiple get project
-router.get("/getProjects", authenticateToken, getProjects);
+router.get("/get-projects", authenticateToken, getProjects);
 
 // single get project
 router.get(

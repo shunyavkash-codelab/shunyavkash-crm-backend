@@ -21,7 +21,7 @@ router.post("/signup", Schema.signupSchema, signup);
 router.post("/login", Schema.loginSchema, login);
 
 // multiple get manager
-router.get("/getManagers", authenticateToken, getManagers);
+router.get("/get-managers", authenticateToken, getManagers);
 
 // single get manager
 router.get(

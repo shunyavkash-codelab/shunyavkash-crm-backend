@@ -16,7 +16,7 @@ var Model = Client;
 router.post("/add", authenticateToken, Schema.addSchema, errorHandal, add);
 
 // multiple get client
-router.get("/getClients", authenticateToken, getClients);
+router.get("/get-clients", authenticateToken, getClients);
 
 // single get client
 router.get(
