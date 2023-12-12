@@ -62,6 +62,19 @@ const managerSchema = new mongoose.Schema(
     signature: {
       type: String,
     },
+    role: {
+      type: Number,
+      enum: [0, 1, 2], // 0 - admin, 1 - manager, 2 - employee
+    },
+    jobRole: {
+      type: String, // frontend, backend, organization
+    },
+    resetPasswordToken: {
+      type: String,
+    },
+    resetPasswordDate: {
+      type: Date,
+    },
   },
 
   { timestamps: true, versionKey: false }
@@ -71,6 +84,7 @@ managerSchema.methods.generateAuthToken = async function () {
   const token = jwt.sign(
     {
       id: this._id,
+      role: this.role,
     },
     process.env.JWT_SECRET_KEY,
     { expiresIn: process.env.JWT_EXPIRE_IN }

@@ -9,11 +9,11 @@ const Schema = require("../validationSchema/projectSchema");
 const errorHandal = require("../middleware/comman").errorHandal;
 const { getRecord } = require("../middleware/getRecord");
 const Project = require("../model/project");
-const { authenticateToken } = require("../middleware/verifyToken");
+const { authenticateToken, auth } = require("../middleware/verifyToken");
 var Model = Project;
 
 // create new project
-router.post("/add", Schema.addSchema, authenticateToken, add);
+router.post("/add", Schema.addSchema, authenticateToken, auth(0, 1), add);
 
 // multiple get project
 router.get("/get-projects", authenticateToken, getProjects);

@@ -2,7 +2,9 @@ const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
 const bcrypt = require("bcrypt");
 const Pagination = require("../../middleware/pagination");
+const sendMail = require("../../utils/mailer");
 const Manager = require("../../model/manager");
+const jwt = require("jsonwebtoken");
 var Model = Manager;
 
 // use edit manager field
@@ -99,6 +101,76 @@ exports.login = asyncHandler(async (req, res, next) => {
       "Something not right, please try again."
     );
   }
+});
+
+//forget password
+exports.forgetPassword = asyncHandler(async (req, res, next) => {
+  let email = req.body.email;
+  const manager = await Model.findOne({ email: email });
+  const accessToken = await manager.generateAuthToken();
+  // return console.log(accessToken);
+  if (!manager) {
+    return Comman.setResponse(res, 404, false, "user does not exist");
+  }
+  const subject = "Forget Password";
+  const message =
+    `<div style="font-size:16px"><span style="font-size:18px;">Hi ${manager.name}!</span><br/> Forgot your password? No worries just click this link to reset it.<br />` +
+    `<br />Tired of remembering your password? Let CRM remember it for you! Just let your smartphone autofill and remember your password!<br /><br />` +
+    `<a style="text-decoration: none; background-color:green;padding:8px 16px; color:white" href="http://localhost:3000/confirm-password?key=${accessToken}">Reset Password</a></div>`;
+  await sendMail(email, subject, message)
+    .then(async (re) => {
+      manager.resetPasswordToken = accessToken;
+      manager.resetPasswordDate = new Date();
+      await manager.save();
+      return Comman.setResponse(
+        res,
+        200,
+        true,
+        `Email is sent on ${manager.email} please check your email.`
+      );
+    })
+    .catch((e) => next(e));
+});
+
+// change password
+exports.changePassword = asyncHandler(async (req, res, next) => {
+  let key = req.query.key;
+  jwt.verify(key, process.env.JWT_SECRET_KEY, async (err, user) => {
+    if (err) return res.status(401).send({ message: err.message });
+    let existUser = await Manager.findById(user.id);
+    if (!existUser)
+      return Comman.setResponse(res, 404, false, "User not found.");
+    if (existUser.resetPasswordToken !== key) {
+      return Comman.setResponse(
+        res,
+        419,
+        false,
+        "Your session has expired. Please open new reset password link."
+      );
+    }
+    let timeDifference = new Date() - existUser.resetPasswordDate;
+    if (timeDifference > 15 * 60 * 1000) {
+      return Comman.setResponse(
+        res,
+        419,
+        false,
+        "Your session has expired. Please open new reset password link."
+      );
+    }
+    existUser.password = await bcrypt.hash(req.body.password || null, 10);
+    existUser.set({
+      resetPasswordToken: undefined,
+      resetPasswordDate: undefined,
+    });
+
+    await existUser.save();
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Your password has been successfully changed."
+    );
+  });
 });
 
 // get single manager

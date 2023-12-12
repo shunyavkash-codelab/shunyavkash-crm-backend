@@ -20,6 +20,7 @@ const fieldNames = [
 // create client
 exports.add = asyncHandler(async (req, res, next) => {
   try {
+    console.log("innnnnnnnn");
     const checkEmail = await Comman.uniqueEmail(Model, req.body.email);
     if (!checkEmail) {
       return Comman.setResponse(
