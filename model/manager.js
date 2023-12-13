@@ -48,6 +48,18 @@ const managerSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    address2: {
+      type: String,
+      trim: true,
+    },
+    landmark: {
+      type: String,
+      trim: true,
+    },
+    pincode: {
+      type: String,
+      trim: true,
+    },
     gender: {
       type: String,
     },

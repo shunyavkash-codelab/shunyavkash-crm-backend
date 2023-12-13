@@ -132,8 +132,8 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
     .catch((e) => next(e));
 });
 
-// change password
-exports.changePassword = asyncHandler(async (req, res, next) => {
+// reset password (forgot password)
+exports.resetPassword = asyncHandler(async (req, res, next) => {
   let key = req.query.key;
   jwt.verify(key, process.env.JWT_SECRET_KEY, async (err, user) => {
     if (err) return res.status(401).send({ message: err.message });
@@ -171,6 +171,29 @@ exports.changePassword = asyncHandler(async (req, res, next) => {
       "Your password has been successfully changed."
     );
   });
+});
+
+// change Password (profile)
+exports.changePassword = asyncHandler(async (req, res, next) => {
+  let oldPassword = req.body.oldPassword;
+  let password = req.body.password;
+  let confirmPassword = req.body.confirmPassword;
+
+  const manager = await Model.findOne({ _id: req.user.id }).select("+password");
+  if (!(await bcrypt.compare(oldPassword, manager.password))) {
+    return Comman.setResponse(res, 401, false, "Invalid password.");
+  }
+  if (password !== confirmPassword)
+    return Comman.setResponse(
+      res,
+      401,
+      false,
+      "Your password and confirmation password do not match."
+    );
+
+  (manager.password = await bcrypt.hash(password || null, 10)),
+    await manager.save();
+  return Comman.setResponse(res, 200, true, "Password change successful.");
 });
 
 // get single manager

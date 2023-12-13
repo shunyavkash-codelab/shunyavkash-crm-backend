@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const Pagination = require("../../middleware/pagination");
 const Bank = require("../../model/bank");
 const { encrypt, decrypt } = require("../../utils/encryption");
+const { default: mongoose } = require("mongoose");
 var Model = Bank;
 
 // create new bank
@@ -74,7 +75,13 @@ exports.getBankById = asyncHandler(async (req, res, next) => {
 // get multiple bank
 exports.getBanks = asyncHandler(async (req, res, next) => {
   try {
-    const aggregate = [];
+    const aggregate = [
+      {
+        $match: {
+          managerId: new mongoose.Types.ObjectId(req.user._id),
+        },
+      },
+    ];
     const result = await Pagination(req, res, Model, aggregate);
     return Comman.setResponse(
       res,
@@ -83,6 +90,21 @@ exports.getBanks = asyncHandler(async (req, res, next) => {
       "Get managers successfully.",
       result
     );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+exports.removeBankById = asyncHandler(async (req, res, next) => {
+  try {
+    await Model.findOneAndDelete({ _id: res.record._id });
+    return Comman.setResponse(res, 200, true, "Remove your bank details");
   } catch (error) {
     console.log(error);
     return Comman.setResponse(

@@ -1,6 +1,11 @@
 var express = require("express");
 var router = express.Router();
-const { add, getBanks, getBankById } = require("../controller/v1/bank");
+const {
+  add,
+  getBanks,
+  getBankById,
+  removeBankById,
+} = require("../controller/v1/bank");
 const Schema = require("../validationSchema/bankSchema");
 const errorHandal = require("../middleware/comman").errorHandal;
 const { getRecord } = require("../middleware/getRecord");
@@ -23,6 +28,15 @@ router.get(
   errorHandal,
   getRecord(Model),
   getBankById
+);
+
+// remove bank detile
+router.delete(
+  "/:id",
+  authenticateToken,
+  auth(1, 2),
+  getRecord(Model),
+  removeBankById
 );
 
 module.exports = router;

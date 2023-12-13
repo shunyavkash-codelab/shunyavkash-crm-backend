@@ -7,6 +7,7 @@ const {
   getManagers,
   editManager,
   forgetPassword,
+  resetPassword,
   changePassword,
 } = require("../controller/v1/manager");
 const Schema = require("../validationSchema/managerSchema");
@@ -25,8 +26,16 @@ router.post("/login", Schema.loginSchema, login);
 // forget password
 router.post("/forget-password", Schema.forgetPassword, forgetPassword);
 
-// change password
-router.post("/change-password", Schema.changePassword, changePassword);
+// reset password (forgot password)
+router.post("/reset-password", Schema.resetPassword, resetPassword);
+
+// change password (profile)
+router.post(
+  "/change-password",
+  authenticateToken,
+  Schema.resetPassword,
+  changePassword
+);
 
 // multiple get manager
 router.get("/get-managers", authenticateToken, getManagers);

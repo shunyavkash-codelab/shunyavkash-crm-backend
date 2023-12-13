@@ -36,7 +36,7 @@ Schema.forgetPassword = [
     .withMessage("email address not valid"),
 ];
 
-Schema.changePassword = [
+Schema.resetPassword = [
   check("password").notEmpty().withMessage("password is a required field"),
 ];
 module.exports = Schema;
