@@ -57,7 +57,7 @@ const managerSchema = new mongoose.Schema(
       trim: true,
     },
     pincode: {
-      type: String,
+      type: Number,
       trim: true,
     },
     gender: {

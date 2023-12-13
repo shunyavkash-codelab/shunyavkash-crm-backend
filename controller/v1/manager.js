@@ -16,6 +16,9 @@ const fieldNames = [
   "mobileCode",
   "mobileNumber",
   "address",
+  "address2",
+  "landmark",
+  "pincode",
   "profile_img",
   "signature",
 ];
@@ -240,10 +243,11 @@ exports.getManagers = asyncHandler(async (req, res, next) => {
   }
 });
 
-// edit manager detile
+// edit manager details
 exports.editManager = asyncHandler(async (req, res, next) => {
   try {
     // check login managerID and edit managerID
+    console.log(req.params.id, "-------------------------------250");
     if (req.user.id.toString() !== req.params.id) {
       return Comman.setResponse(
         res,
