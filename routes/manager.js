@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const {
-  signup,
+  add,
   login,
   getManagerById,
   getManagers,
@@ -17,8 +17,8 @@ const Manager = require("../model/manager");
 const { authenticateToken, auth } = require("../middleware/verifyToken");
 var Model = Manager;
 
-// registration
-router.post("/signup", Schema.signupSchema, signup);
+// add manager by admin
+router.post("/add", Schema.signupSchema, add);
 
 // login
 router.post("/login", Schema.loginSchema, login);

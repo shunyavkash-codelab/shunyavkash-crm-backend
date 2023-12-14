@@ -23,8 +23,8 @@ const fieldNames = [
   "signature",
 ];
 
-// registration
-exports.signup = asyncHandler(async (req, res, next) => {
+// add manager by admin
+exports.add = asyncHandler(async (req, res, next) => {
   try {
     const checkEmail = await Comman.uniqueEmail(Model, req.body.email);
     if (!checkEmail) {
@@ -44,6 +44,17 @@ exports.signup = asyncHandler(async (req, res, next) => {
         "This mobile number already exists."
       );
     }
+
+    //generate random password
+    const charset =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let password = "";
+
+    for (let i = 0; i < 8; i++) {
+      const randomIndex = Math.floor(Math.random() * charset.length);
+      password += charset.charAt(randomIndex);
+    }
+
     const registration = await Model.create({
       name: req.body.name,
       companyName: req.body.companyName,
@@ -51,18 +62,87 @@ exports.signup = asyncHandler(async (req, res, next) => {
       profile_img: req.body.profile_img,
       websiteURL: req.body.websiteURL,
       email: req.body.email,
-      password: await bcrypt.hash(req.body.password || null, 10),
+      password: await bcrypt.hash(password || null, 10),
       mobileCode: req.body.mobileCode,
       mobileNumber: req.body.mobileNumber,
       gender: req.body.gender,
       address: req.body.address,
+      address2: req.body.address2,
+      landmark: req.body.landmark,
+      pincode: req.body.pincode,
       signature: req.body.signature,
+      role: 1,
     });
+    const admin = await Model.findOne({ role: 0 });
+    let email = req.body.email;
+    const subject = "Welcome to CRM - Your Login Credentials";
+    const message = `<body
+    style="font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;"
+      >
+        <div
+          class="container"
+          style="max-width: 600px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);"
+        >
+          <h1 style="color: #333;">Welcome to CRM!</h1>
+          <p style="color:#666;">Dear ${req.body.name}</p>
+          <p style="color: #666;">
+            We are excited to have you on board. Below are your login credentials:
+          </p>
+
+          <ul>
+            <li>
+              <strong>Email:</strong> ${req.body.email}
+            </li>
+            <li>
+              <strong>Password:</strong> ${password}
+            </li>
+          </ul>
+
+          <p>
+            Please use the provided credentials to log in to the CRM platform. For
+            security reasons, we recommend changing your password after the
+            initial login.
+          </p>
+
+          <p>
+            If you have any questions or need assistance, feel free to reach out
+            to our support team at ${admin.email}.
+          </p>
+
+          <p>
+            Thank you for choosing our CRM platform. We look forward to assisting
+            you in managing your customer relationships effectively.
+          </p>
+
+          <a
+            href="http://localhost:3000/signin"
+            class="button"
+            style="display: inline-block;
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;"
+          >
+            Log In to CRM
+          </a>
+        </div>
+      </body>`;
+
+    await sendMail(email, subject, message);
     return Comman.setResponse(
       res,
       201,
       true,
-      "Registration completed successfully.",
+      "Manager added successfully.",
       registration
     );
   } catch (error) {
@@ -184,7 +264,7 @@ exports.changePassword = asyncHandler(async (req, res, next) => {
 
   const manager = await Model.findOne({ _id: req.user.id }).select("+password");
   if (!(await bcrypt.compare(oldPassword, manager.password))) {
-    return Comman.setResponse(res, 401, false, "Invalid password.");
+    return Comman.setResponse(res, 401, false, "Old password is incorrect.");
   }
   if (password !== confirmPassword)
     return Comman.setResponse(
@@ -247,7 +327,6 @@ exports.getManagers = asyncHandler(async (req, res, next) => {
 exports.editManager = asyncHandler(async (req, res, next) => {
   try {
     // check login managerID and edit managerID
-    console.log(req.params.id, "-------------------------------250");
     if (req.user.id.toString() !== req.params.id) {
       return Comman.setResponse(
         res,
