@@ -31,6 +31,7 @@ exports.add = asyncHandler(async (req, res, next) => {
     req.body.label = "******" + req.body.accountNumber.substring(6);
     req.body.accountNumber = encrypt(req.body.accountNumber);
     req.body.managerId = req.user.id;
+    req.body.defaultBank = already.length == 0 ? true : req.body.defaultBank;
 
     const bank = await Model.create(req.body);
     return Comman.setResponse(
@@ -101,8 +102,16 @@ exports.getBanks = asyncHandler(async (req, res, next) => {
   }
 });
 
+// delete bank
 exports.removeBankById = asyncHandler(async (req, res, next) => {
   try {
+    if (res.record.defaultBank)
+      return Comman.setResponse(
+        res,
+        401,
+        false,
+        "Default bank can not remove."
+      );
     await Model.findOneAndDelete({ _id: res.record._id });
     return Comman.setResponse(res, 200, true, "Remove your bank details");
   } catch (error) {
@@ -112,6 +121,36 @@ exports.removeBankById = asyncHandler(async (req, res, next) => {
       400,
       false,
       "Something not right, please try again."
+    );
+  }
+});
+
+// change defult bank
+exports.editDefaultBank = asyncHandler(async (req, res, next) => {
+  let id = req.params.id;
+  const defaultBank = await Model.findOne({
+    managerId: req.user._id,
+    defaultBank: true,
+  });
+  const bank = await Model.findById(id);
+  if (!bank) return Comman.setResponse(res, 404, false, "Bank not found.");
+  if (req.body.defaultBank) {
+    if (defaultBank) {
+      defaultBank.defaultBank = false;
+      await defaultBank.save();
+    }
+    await Model.findByIdAndUpdate(
+      id,
+      { $set: { defaultBank: true } },
+      { new: true }
+    );
+    return Comman.setResponse(res, 200, true, "Set default bank.");
+  } else {
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Please set other bank default."
     );
   }
 });

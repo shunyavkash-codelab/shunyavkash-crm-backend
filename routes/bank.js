@@ -5,6 +5,7 @@ const {
   getBanks,
   getBankById,
   removeBankById,
+  editDefaultBank,
 } = require("../controller/v1/bank");
 const Schema = require("../validationSchema/bankSchema");
 const errorHandal = require("../middleware/comman").errorHandal;
@@ -38,5 +39,8 @@ router.delete(
   getRecord(Model),
   removeBankById
 );
+
+// edit defult bank
+router.patch("/:id", authenticateToken, auth(0, 1), editDefaultBank);
 
 module.exports = router;
