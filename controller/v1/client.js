@@ -136,9 +136,34 @@ exports.getClients = asyncHandler(async (req, res, next) => {
         },
       },
       {
+        $lookup: {
+          from: "projects",
+          localField: "_id",
+          foreignField: "clientId",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+            {
+              $limit: 5,
+            },
+          ],
+          as: "project",
+        },
+      },
+      {
         $addFields: {
           managerName: {
             $first: "$managerName.name",
+          },
+          projectName: {
+            $map: {
+              input: "$project",
+              as: "projectItem",
+              in: "$$projectItem.name",
+            },
           },
         },
       },
