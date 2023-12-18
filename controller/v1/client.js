@@ -103,7 +103,7 @@ exports.getClientById = asyncHandler(async (req, res, next) => {
       200,
       true,
       "Get client successfully.",
-      client
+      client[0]
     );
   } catch (error) {
     console.log(error);
