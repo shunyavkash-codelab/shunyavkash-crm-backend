@@ -10,6 +10,7 @@ var dashboardRouter = require("./routes/dashboard");
 const Country = require("./model/country");
 const Comman = require("./middleware/comman");
 const Currency = require("./model/currency");
+var adminRouter = require("./routes/admin");
 // Allows cross-origin requests
 var allowedOrigins = ["http://localhost:3000"];
 router.use(
@@ -36,6 +37,7 @@ router.use("/manager", managerRouter);
 router.use("/project", projectRouter);
 router.use("/bank", bankRouter);
 router.use("/dashboard", dashboardRouter);
+router.use("/admin", adminRouter);
 
 router.get("/country-code", async (req, res) => {
   let countryList = await Country.find();
