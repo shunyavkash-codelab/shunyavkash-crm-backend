@@ -73,7 +73,9 @@ exports.getClientById = asyncHandler(async (req, res, next) => {
   try {
     let client = await Model.aggregate([
       {
-        $match: { _id: new mongoose.Types.ObjectId(req.params.id) },
+        $match: {
+          _id: new mongoose.Types.ObjectId(req.params.id),
+        },
       },
       {
         $lookup: {
@@ -91,11 +93,39 @@ exports.getClientById = asyncHandler(async (req, res, next) => {
         },
       },
       {
+        $lookup: {
+          from: "projects",
+          localField: "_id",
+          foreignField: "clientId",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+            {
+              $limit: 5,
+            },
+          ],
+          as: "project",
+        },
+      },
+      {
         $addFields: {
           managerName: {
             $first: "$managerName.name",
           },
+          projectName: {
+            $map: {
+              input: "$project",
+              as: "projectItem",
+              in: "$$projectItem.name",
+            },
+          },
         },
+      },
+      {
+        $unset: "project",
       },
     ]);
     return Comman.setResponse(
