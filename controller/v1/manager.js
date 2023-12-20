@@ -5,6 +5,7 @@ const Pagination = require("../../middleware/pagination");
 const sendMail = require("../../utils/mailer");
 const Manager = require("../../model/manager");
 const jwt = require("jsonwebtoken");
+const { default: mongoose } = require("mongoose");
 var Model = Manager;
 
 // use edit manager field
@@ -281,13 +282,45 @@ exports.changePassword = asyncHandler(async (req, res, next) => {
 
 // get single manager
 exports.getManagerById = asyncHandler(async (req, res, next) => {
+  const manager = await Model.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(req.params.id),
+      },
+    },
+    {
+      $lookup: {
+        from: "managers",
+        localField: "reference",
+        foreignField: "_id",
+        pipeline: [
+          {
+            $project: {
+              name: 1,
+            },
+          },
+        ],
+        as: "manager",
+      },
+    },
+    {
+      $addFields: {
+        referenceName: {
+          $first: "$manager.name",
+        },
+      },
+    },
+    {
+      $unset: "manager",
+    },
+  ]);
   try {
     return Comman.setResponse(
       res,
       200,
       true,
       "Get client successfully.",
-      res.record
+      manager[0]
     );
   } catch (error) {
     console.log(error);

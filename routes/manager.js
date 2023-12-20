@@ -46,7 +46,7 @@ router.get(
   authenticateToken,
   Schema.getManagerByIdSchema,
   errorHandal,
-  getRecord(Model),
+  // getRecord(Model),
   getManagerById
 );
 
