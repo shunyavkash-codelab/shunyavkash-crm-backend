@@ -3,6 +3,7 @@ const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
 const Client = require("../../model/client");
+const { validationResult } = require("express-validator");
 var Model = Client;
 
 // use edit client field
@@ -19,6 +20,12 @@ const fieldNames = [
 
 // create client
 exports.add = asyncHandler(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return Comman.setResponse(res, 400, false, "Required params not found.", {
+      errors: errors.array(),
+    });
+  }
   try {
     const checkEmail = await Comman.uniqueEmail(Model, req.body.email);
     if (!checkEmail) {
@@ -70,6 +77,12 @@ exports.add = asyncHandler(async (req, res, next) => {
 
 // get single client
 exports.getClientById = asyncHandler(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return Comman.setResponse(res, 400, false, "Required params not found.", {
+      errors: errors.array(),
+    });
+  }
   try {
     let client = await Model.aggregate([
       {
@@ -219,6 +232,12 @@ exports.getClients = asyncHandler(async (req, res, next) => {
 
 // edit client
 exports.editClient = asyncHandler(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return Comman.setResponse(res, 400, false, "Required params not found.", {
+      errors: errors.array(),
+    });
+  }
   try {
     fieldNames.forEach((field) => {
       if (req.body[field] != null) res.record[field] = req.body[field];

@@ -5,6 +5,7 @@ const Pagination = require("../../middleware/pagination");
 const Bank = require("../../model/bank");
 const { encrypt, decrypt } = require("../../utils/encryption");
 const { default: mongoose } = require("mongoose");
+const { validationResult } = require("express-validator");
 var Model = Bank;
 
 // create new bank
@@ -54,6 +55,12 @@ exports.add = asyncHandler(async (req, res, next) => {
 
 // get single bank
 exports.getBankById = asyncHandler(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return Comman.setResponse(res, 400, false, "Required params not found.", {
+      errors: errors.array(),
+    });
+  }
   try {
     return Comman.setResponse(
       res,
