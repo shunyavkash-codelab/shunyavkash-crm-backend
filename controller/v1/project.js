@@ -175,3 +175,26 @@ exports.getProjects = asyncHandler(async (req, res, next) => {
     );
   }
 });
+
+// get project by clientId
+exports.getProjectsByClient = asyncHandler(async (req, res, next) => {
+  try {
+    let id = req.params.id;
+    const project = await Model.find({ clientId: id });
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Get client successfully.",
+      project
+    );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});

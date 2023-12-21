@@ -4,6 +4,7 @@ const {
   add,
   getProjects,
   getProjectById,
+  getProjectsByClient,
 } = require("../controller/v1/project");
 const Schema = require("../validationSchema/projectSchema");
 const errorHandal = require("../middleware/comman").errorHandal;
@@ -27,5 +28,7 @@ router.get(
   getRecord(Model),
   getProjectById
 );
+
+router.get("/get-project-name/:id", getProjectsByClient);
 
 module.exports = router;
