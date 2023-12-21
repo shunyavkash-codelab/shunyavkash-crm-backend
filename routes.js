@@ -7,6 +7,7 @@ var defaultRoutes = require("./routes/default");
 var projectRouter = require("./routes/project");
 var bankRouter = require("./routes/bank");
 var dashboardRouter = require("./routes/dashboard");
+var invoiceRouter = require("./routes/invoice");
 const Country = require("./model/country");
 const Comman = require("./middleware/comman");
 const Currency = require("./model/currency");
@@ -38,6 +39,7 @@ router.use("/project", projectRouter);
 router.use("/bank", bankRouter);
 router.use("/dashboard", dashboardRouter);
 router.use("/admin", adminRouter);
+router.use("/invoice", invoiceRouter);
 
 router.get("/country-code", async (req, res) => {
   let countryList = await Country.find();
