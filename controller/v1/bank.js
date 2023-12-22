@@ -134,30 +134,40 @@ exports.removeBankById = asyncHandler(async (req, res, next) => {
 
 // change defult bank
 exports.editDefaultBank = asyncHandler(async (req, res, next) => {
-  let id = req.params.id;
-  const defaultBank = await Model.findOne({
-    managerId: req.user._id,
-    defaultBank: true,
-  });
-  const bank = await Model.findById(id);
-  if (!bank) return Comman.setResponse(res, 404, false, "Bank not found.");
-  if (req.body.defaultBank) {
-    if (defaultBank) {
-      defaultBank.defaultBank = false;
-      await defaultBank.save();
+  try {
+    let id = req.params.id;
+    const defaultBank = await Model.findOne({
+      managerId: req.user._id,
+      defaultBank: true,
+    });
+    const bank = await Model.findById(id);
+    if (!bank) return Comman.setResponse(res, 404, false, "Bank not found.");
+    if (req.body.defaultBank) {
+      if (defaultBank) {
+        defaultBank.defaultBank = false;
+        await defaultBank.save();
+      }
+      await Model.findByIdAndUpdate(
+        id,
+        { $set: { defaultBank: true } },
+        { new: true }
+      );
+      return Comman.setResponse(res, 200, true, "Set default bank.");
+    } else {
+      return Comman.setResponse(
+        res,
+        400,
+        false,
+        "Please set other bank default."
+      );
     }
-    await Model.findByIdAndUpdate(
-      id,
-      { $set: { defaultBank: true } },
-      { new: true }
-    );
-    return Comman.setResponse(res, 200, true, "Set default bank.");
-  } else {
+  } catch (error) {
+    console.log(error);
     return Comman.setResponse(
       res,
       400,
       false,
-      "Please set other bank default."
+      "Something not right, please try again."
     );
   }
 });

@@ -5,10 +5,25 @@ const Manager = require("../../model/manager");
 // get admin by role
 exports.getAdminByRole = asyncHandler(async (req, res, next) => {
   try {
-    const admin = await Manager.findOne({ role: 0 }).select(
-      "address address2 landmark pincode email mobileCode mobileNumber companyName"
-    );
-    if (!admin) {
+    // const admin = await Manager.findOne({ role: 0 }).select(
+    //   "address address2 landmark pincode email mobileCode mobileNumber companyName"
+    // );
+    const admin = await Manager.aggregate([
+      {
+        $match: {
+          role: 0,
+        },
+      },
+      {
+        $lookup: {
+          from: "banks",
+          localField: "_id",
+          foreignField: "managerId",
+          as: "bank",
+        },
+      },
+    ]);
+    if (!admin.length) {
       return Comman.setResponse(res, 404, false, "Admin does not exist.");
     }
     return Comman.setResponse(
@@ -16,7 +31,7 @@ exports.getAdminByRole = asyncHandler(async (req, res, next) => {
       200,
       true,
       "Retrieve administrator details.",
-      admin
+      admin[0]
     );
   } catch (error) {
     console.log(error);
