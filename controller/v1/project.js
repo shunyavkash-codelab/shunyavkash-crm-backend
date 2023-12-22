@@ -99,7 +99,7 @@ exports.getProjectById = asyncHandler(async (req, res, next) => {
       200,
       true,
       "Get client successfully.",
-      project
+      project[0]
     );
   } catch (error) {
     console.log(error);

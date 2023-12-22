@@ -3,12 +3,6 @@ const { check, param } = require("express-validator");
 const Schema = {};
 
 Schema.addSchema = [
-  check("email")
-    .notEmpty()
-    .withMessage("email is a required field")
-    .isLength({ min: 3, max: 84 })
-    .isEmail()
-    .withMessage("email address not valid"),
   check("name").notEmpty().withMessage("name is a required field"),
   check("clientId").notEmpty().withMessage("clientId is a required field"),
   check("perHourCharge")
