@@ -15,7 +15,6 @@ exports.add = asyncHandler(async (req, res, next) => {
     });
   }
   try {
-    console.log("innn nnnn");
     req.body.managerId = req.user.id;
     const task = await Model.create(req.body);
     return Comman.setResponse(res, 201, true, "Task added successfully.", task);
@@ -36,8 +35,48 @@ exports.add = asyncHandler(async (req, res, next) => {
 // get multiple task by projectId
 exports.gettaskByProject = asyncHandler(async (req, res, next) => {
   try {
-    let id = req.params.id;
-    const task = await Model.find({ projectId: id });
+    let id = req.params.id; // projectId
+    // const task = await Model.find({ projectId: id });
+    const task = await Model.aggregate([
+      {
+        $match: {
+          projectId: new mongoose.Types.ObjectId(id),
+        },
+      },
+      {
+        $lookup: {
+          from: "projects",
+          localField: "projectId",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                perHourCharge: 1,
+              },
+            },
+          ],
+          as: "project",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          managerId: 1,
+          projectId: 1,
+          taskNo: 1,
+          taskName: 1,
+          taskDescription: 1,
+          hours: 1,
+          assignUser: 1,
+          status: 1,
+          taskPriority: 1,
+          perHourCharge: {
+            $first: "$project.perHourCharge",
+          },
+          createdAt: 1,
+        },
+      },
+    ]);
     return Comman.setResponse(res, 200, true, "Get task successfully.", task);
   } catch (error) {
     return Comman.setResponse(
