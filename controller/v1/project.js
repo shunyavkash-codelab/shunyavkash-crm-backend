@@ -115,7 +115,12 @@ exports.getProjectById = asyncHandler(async (req, res, next) => {
 // get multiple project
 exports.getProjects = asyncHandler(async (req, res, next) => {
   try {
+    let search = {};
+    if (req.query.search) {
+      search = { name: { $regex: req.query.search, $options: "i" } };
+    }
     const aggregate = [
+      { $match: search },
       {
         $lookup: {
           from: "managers",

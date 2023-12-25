@@ -373,7 +373,11 @@ exports.getManagerById = asyncHandler(async (req, res, next) => {
 // get multiple manager
 exports.getManagers = asyncHandler(async (req, res, next) => {
   try {
-    const aggregate = [];
+    let search = {};
+    if (req.query.search) {
+      search = { name: { $regex: req.query.search, $options: "i" } };
+    }
+    const aggregate = [{ $match: search }];
     const result = await Pagination(req, res, Model, aggregate);
     return Comman.setResponse(
       res,

@@ -162,7 +162,12 @@ exports.getClientById = asyncHandler(async (req, res, next) => {
 // get multiple client
 exports.getClients = asyncHandler(async (req, res, next) => {
   try {
+    let search = {};
+    if (req.query.search) {
+      search = { name: { $regex: req.query.search, $options: "i" } };
+    }
     const aggregate = [
+      { $match: search },
       {
         $lookup: {
           from: "managers",
