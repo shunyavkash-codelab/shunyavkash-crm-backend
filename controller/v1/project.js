@@ -189,7 +189,7 @@ exports.getProjectsByClient = asyncHandler(async (req, res, next) => {
     const project = await Model.aggregate([
       {
         $match: {
-          clientId: mongoose.Schema.Types.ObjectId(id),
+          clientId: new mongoose.Types.ObjectId(id),
         },
       },
       {
@@ -231,7 +231,7 @@ exports.getProjectsByClient = asyncHandler(async (req, res, next) => {
       200,
       true,
       "Get client successfully.",
-      project[0]
+      project
     );
   } catch (error) {
     console.log(error);
