@@ -185,13 +185,53 @@ exports.getProjects = asyncHandler(async (req, res, next) => {
 exports.getProjectsByClient = asyncHandler(async (req, res, next) => {
   try {
     let id = req.params.id;
-    const project = await Model.find({ clientId: id });
+    // const project = await Model.find({ clientId: id });
+    const project = await Model.aggregate([
+      {
+        $match: {
+          clientId: mongoose.Schema.Types.ObjectId(id),
+        },
+      },
+      {
+        $lookup: {
+          from: "clients",
+          localField: "employeeId",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+          as: "employee",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          clientId: 1,
+          managerId: 1,
+          description: 1,
+          startDate: 1,
+          endDate: 1,
+          perHourCharge: 1,
+          currency: 1,
+          payPeriod: 1,
+          prefix: 1,
+          status: 1,
+          createdAt: 1,
+          employeeName: "$employee.name",
+        },
+      },
+    ]);
     return Comman.setResponse(
       res,
       200,
       true,
       "Get client successfully.",
-      project
+      project[0]
     );
   } catch (error) {
     console.log(error);
