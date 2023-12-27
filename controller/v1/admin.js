@@ -3,7 +3,15 @@ const Comman = require("../../middleware/comman");
 const Manager = require("../../model/manager");
 
 // use edit admin field
-const fieldNames = ["email", "mobileCode", "mobileNumber", "address"];
+const fieldNames = [
+  "email",
+  "mobileCode",
+  "mobileNumber",
+  "address",
+  "address2",
+  "landmark",
+  "pincode",
+];
 
 // get admin by role
 exports.getAdminByRole = asyncHandler(async (req, res, next) => {
