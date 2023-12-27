@@ -16,6 +16,11 @@ const invoiceSchema = new mongoose.Schema(
     },
     taskIds: {
       type: [mongoose.Schema.Types.ObjectId],
+      ref: "Task",
+    },
+    bankId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Bank",
     },
     invoiceNumber: {
       type: String,
