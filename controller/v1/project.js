@@ -7,6 +7,20 @@ const { default: mongoose } = require("mongoose");
 const { validationResult } = require("express-validator");
 var Model = Project;
 
+// use edit project field
+const fieldNames = [
+  "name",
+  "payPeriod",
+  "perHourCharge",
+  "prefix",
+  "startDate",
+  "endDate",
+  "status",
+  "description",
+  "currency",
+  "clientId",
+];
+
 // create new project
 exports.add = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
@@ -29,6 +43,38 @@ exports.add = asyncHandler(async (req, res, next) => {
       "Project added successfully.",
       project
     );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// edit project
+exports.edit = asyncHandler(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return Comman.setResponse(res, 400, false, "Required params not found.", {
+      errors: errors.array(),
+    });
+  }
+  try {
+    const checkPrefix = await Model.findOne({
+      _id: { $ne: req.params.id },
+      prefix: req.body.prefix,
+    });
+    if (checkPrefix) {
+      return Comman.setResponse(res, 409, false, "This prefix already exists.");
+    }
+    fieldNames.forEach((field) => {
+      if (req.body[field] != null) res.record[field] = req.body[field];
+    });
+    await Model.updateOne({ _id: req.params.id }, res.record, { new: true });
+    return Comman.setResponse(res, 200, true, "Update project successfully.");
   } catch (error) {
     console.log(error);
     return Comman.setResponse(
@@ -98,7 +144,7 @@ exports.getProjectById = asyncHandler(async (req, res, next) => {
       res,
       200,
       true,
-      "Get client successfully.",
+      "Get project successfully.",
       project[0]
     );
   } catch (error) {
@@ -167,7 +213,7 @@ exports.getProjects = asyncHandler(async (req, res, next) => {
       res,
       200,
       true,
-      "Get managers successfully.",
+      "Get projects successfully.",
       result
     );
   } catch (error) {
@@ -230,7 +276,7 @@ exports.getProjectsByClient = asyncHandler(async (req, res, next) => {
       res,
       200,
       true,
-      "Get client successfully.",
+      "Get projects successfully.",
       project
     );
   } catch (error) {
