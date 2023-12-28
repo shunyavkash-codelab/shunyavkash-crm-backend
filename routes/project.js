@@ -18,14 +18,7 @@ var Model = Project;
 router.post("/add", Schema.addSchema, authenticateToken, auth(0, 1), add);
 
 // edit project
-router.patch(
-  "/:id",
-  Schema.addSchema,
-  authenticateToken,
-  auth(0, 1),
-  getRecord(Model),
-  edit
-);
+router.patch("/:id", authenticateToken, auth(0, 1), getRecord(Model), edit);
 
 // multiple get project
 router.get("/get-projects", authenticateToken, getProjects);

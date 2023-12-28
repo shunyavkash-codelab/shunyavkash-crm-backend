@@ -65,7 +65,7 @@ exports.edit = asyncHandler(async (req, res, next) => {
   try {
     const checkPrefix = await Model.findOne({
       _id: { $ne: req.params.id },
-      prefix: req.body.prefix,
+      prefix: req.body?.prefix,
     });
     if (checkPrefix) {
       return Comman.setResponse(res, 409, false, "This prefix already exists.");

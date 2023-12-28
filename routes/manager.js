@@ -1,10 +1,11 @@
 var express = require("express");
 var router = express.Router();
 const {
-  add,
+  addEmployee,
   login,
   getManagerById,
   getManagers,
+  getEmployees,
   editManager,
   forgetPassword,
   resetPassword,
@@ -17,8 +18,14 @@ const Manager = require("../model/manager");
 const { authenticateToken, auth } = require("../middleware/verifyToken");
 var Model = Manager;
 
-// add manager by admin
-router.post("/add", Schema.signupSchema, add);
+// add employee
+router.post(
+  "/add",
+  Schema.addEmployeeSchema,
+  authenticateToken,
+  auth(0),
+  addEmployee
+);
 
 // login
 router.post("/login", Schema.loginSchema, login);
@@ -39,6 +46,9 @@ router.post(
 
 // multiple get manager
 router.get("/get-managers", authenticateToken, getManagers);
+
+// multiple get employee
+router.get("/get-employee", authenticateToken, getEmployees);
 
 // single get manager
 router.get(

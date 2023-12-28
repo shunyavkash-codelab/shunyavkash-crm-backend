@@ -26,7 +26,7 @@ const fieldNames = [
 ];
 
 // add manager by admin
-exports.add = asyncHandler(async (req, res, next) => {
+exports.addEmployee = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return Comman.setResponse(res, 400, false, "Required params not found.", {
@@ -34,7 +34,8 @@ exports.add = asyncHandler(async (req, res, next) => {
     });
   }
   try {
-    const checkEmail = await Comman.uniqueEmail(Model, req.body.email);
+    const { name, email, password, role } = req.body;
+    const checkEmail = await Comman.uniqueEmail(Model, email);
     if (!checkEmail) {
       return Comman.setResponse(
         res,
@@ -43,46 +44,18 @@ exports.add = asyncHandler(async (req, res, next) => {
         "This email address already exists."
       );
     }
-    const checkMobile = await Comman.uniqueMobile(Model, req.body.mobileNumber);
-    if (!checkMobile) {
-      return Comman.setResponse(
-        res,
-        409,
-        false,
-        "This mobile number already exists."
-      );
-    }
-
-    //generate random password
-    const charset =
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let password = "";
-
-    for (let i = 0; i < 8; i++) {
-      const randomIndex = Math.floor(Math.random() * charset.length);
-      password += charset.charAt(randomIndex);
-    }
-
     const registration = await Model.create({
-      name: req.body.name,
-      companyName: req.body.companyName,
-      companyLogo: req.body.companyLogo,
-      profile_img: req.body.profile_img,
-      websiteURL: req.body.websiteURL,
-      email: req.body.email,
+      name: name,
+      email: email,
       password: await bcrypt.hash(password || null, 10),
-      mobileCode: req.body.mobileCode,
-      mobileNumber: req.body.mobileNumber,
-      gender: req.body.gender,
-      address: req.body.address,
-      address2: req.body.address2,
-      landmark: req.body.landmark,
-      pincode: req.body.pincode,
-      signature: req.body.signature,
-      role: 1,
+      role:
+        role == "superAdmin"
+          ? 0
+          : role == "manager"
+          ? 1
+          : role == "employee" && 2,
     });
     const admin = await Model.findOne({ role: 0 });
-    let email = req.body.email;
     const subject = "Welcome to CRM - Your Login Credentials";
     const message = `<body
     style="font-family: 'Arial', sans-serif;
@@ -100,14 +73,14 @@ exports.add = asyncHandler(async (req, res, next) => {
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);"
         >
           <h1 style="color: #333;">Welcome to CRM!</h1>
-          <p style="color:#666;">Dear ${req.body.name}</p>
+          <p style="color:#666;">Dear ${name}</p>
           <p style="color: #666;">
             We are excited to have you on board. Below are your login credentials:
           </p>
 
           <ul>
             <li>
-              <strong>Email:</strong> ${req.body.email}
+              <strong>Email:</strong> ${email}
             </li>
             <li>
               <strong>Password:</strong> ${password}
@@ -150,7 +123,7 @@ exports.add = asyncHandler(async (req, res, next) => {
       res,
       201,
       true,
-      "Manager added successfully.",
+      `${role} added successfully.`,
       registration
     );
   } catch (error) {
@@ -187,6 +160,8 @@ exports.login = asyncHandler(async (req, res, next) => {
     // generate tokens
     const accessToken = await check.generateAuthToken();
     check._doc.token = accessToken;
+    check.invitationStatus = 1;
+    await check.save();
 
     return Comman.setResponse(res, 200, true, "Login successfully", check);
   } catch (error) {
@@ -373,9 +348,9 @@ exports.getManagerById = asyncHandler(async (req, res, next) => {
 // get multiple manager
 exports.getManagers = asyncHandler(async (req, res, next) => {
   try {
-    let search = {};
+    let search = { role: 1 };
     if (req.query.search) {
-      search = { name: { $regex: req.query.search, $options: "i" } };
+      search.name = { $regex: req.query.search, $options: "i" };
     }
     const aggregate = [{ $match: search }];
     const result = await Pagination(req, res, Model, aggregate);
@@ -414,6 +389,33 @@ exports.editManager = asyncHandler(async (req, res, next) => {
     });
     await Model.updateOne({ _id: req.params.id }, res.record, { new: true });
     return Comman.setResponse(res, 200, true, "Update manager successfully.");
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// get employees
+exports.getEmployees = asyncHandler(async (req, res, next) => {
+  try {
+    let search = { role: 2, invitationStatus: 1 };
+    if (req.query.search) {
+      search.name = { $regex: req.query.search, $options: "i" };
+    }
+    const aggregate = [{ $match: search }];
+    const result = await Pagination(req, res, Model, aggregate);
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Get employee successfully.",
+      result
+    );
   } catch (error) {
     console.log(error);
     return Comman.setResponse(
