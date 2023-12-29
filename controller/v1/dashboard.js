@@ -66,7 +66,7 @@ exports.dashboard = asyncHandler(async (req, res, next) => {
             {
               $project: {
                 total_project: {
-                  $first: "$project.count",
+                  $first: "$projects.projectCount.count",
                 },
               },
             },

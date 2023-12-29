@@ -23,6 +23,7 @@ const fieldNames = [
   "pincode",
   "profile_img",
   "signature",
+  "role",
 ];
 
 // add manager by admin
@@ -376,14 +377,14 @@ exports.getManagers = asyncHandler(async (req, res, next) => {
 exports.editManager = asyncHandler(async (req, res, next) => {
   try {
     // check login managerID and edit managerID
-    if (req.user.id.toString() !== req.params.id) {
-      return Comman.setResponse(
-        res,
-        401,
-        false,
-        "Unauthorized access to this route."
-      );
-    }
+    // if (req.user.id.toString() !== req.params.id) {
+    //   return Comman.setResponse(
+    //     res,
+    //     401,
+    //     false,
+    //     "Unauthorized access to this route."
+    //   );
+    // }
     fieldNames.forEach((field) => {
       if (req.body[field] != null) res.record[field] = req.body[field];
     });
