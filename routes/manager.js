@@ -11,6 +11,7 @@ const {
   resetPassword,
   changePassword,
   getAllEmployees,
+  deleteEmployee,
 } = require("../controller/v1/manager");
 const Schema = require("../validationSchema/managerSchema");
 const errorHandal = require("../middleware/comman").errorHandal;
@@ -68,10 +69,19 @@ router.get(
 router.patch(
   "/:id",
   authenticateToken,
-  auth(0, 1),
+  auth(0, 1, 2),
   errorHandal,
   getRecord(Model),
   editManager
+);
+
+// delete emaployee and manager
+router.delete(
+  "/:id",
+  authenticateToken,
+  auth(0),
+  getRecord(Model),
+  deleteEmployee
 );
 
 module.exports = router;

@@ -30,7 +30,7 @@ const invoiceSchema = new mongoose.Schema(
     invoiceDate: {
       type: Date,
     },
-    dueDate: {
+    invoiceDueDate: {
       type: Date,
     },
     from: {

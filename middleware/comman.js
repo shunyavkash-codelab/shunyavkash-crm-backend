@@ -70,6 +70,14 @@ Comman.generateInvoiceNumber = async () => {
       let incNum = latestNum.number + 1;
       let formattedNumber = incNum.toString().padStart(3, "0");
       invoiceNumber = `${formattedDate}${formattedNumber}`;
+      const checkNumber = await Invoice.findOne({
+        invoiceNumber: invoiceNumber,
+      });
+      if (checkNumber) {
+        invoiceNumber = (Number(invoiceNumber) + 1).toString();
+        latestNum.number = latestNum.number + 1;
+        await latestNum.save();
+      }
       return invoiceNumber;
     } else {
       await InvoiceNumber.create({ year: year });

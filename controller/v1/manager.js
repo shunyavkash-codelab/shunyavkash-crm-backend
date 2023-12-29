@@ -454,3 +454,19 @@ exports.getAllEmployees = asyncHandler(async (req, res, next) => {
     );
   }
 });
+
+// delete employee and manager
+exports.deleteEmployee = asyncHandler(async (req, res, next) => {
+  try {
+    await Model.findByIdAndDelete(res.record._id);
+    return Comman.setResponse(res, 200, true, "Deleted successfully.");
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
