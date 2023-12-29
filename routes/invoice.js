@@ -4,6 +4,7 @@ const {
   generateInvoiceNum,
   addInvoice,
   checkInvoiceNum,
+  invoiceList,
 } = require("../controller/v1/invoice");
 const errorHandal = require("../middleware/comman").errorHandal;
 const { getRecord } = require("../middleware/getRecord");
@@ -29,5 +30,8 @@ router.get(
   auth(0),
   checkInvoiceNum
 );
+
+// check invoice number exist or not
+router.get("/invoices", authenticateToken, auth(0), invoiceList);
 
 module.exports = router;

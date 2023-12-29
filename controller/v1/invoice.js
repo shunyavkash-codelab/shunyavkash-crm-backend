@@ -1,5 +1,6 @@
 const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
+const Pagination = require("../../middleware/pagination");
 const Invoice = require("../../model/invoice");
 const InvoiceNumber = require("../../model/invoiceNumber");
 const Model = Invoice;
@@ -57,6 +58,87 @@ exports.checkInvoiceNum = asyncHandler(async (req, res, next) => {
     }
 
     return Comman.setResponse(res, 200, true, "Invoice number is available");
+  } catch (error) {
+    Comman.setResponse(res, 400, false, "Something went wrong, please retry");
+  }
+});
+
+// get invoice list
+exports.invoiceList = asyncHandler(async (req, res, next) => {
+  try {
+    let search = {};
+    if (req.query.search) {
+      search = { invoiceNumber: { $regex: req.query.search, $options: "i" } };
+    }
+    const aggregate = [
+      { $match: search },
+      {
+        $lookup: {
+          from: "managers",
+          localField: "managerId",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+          as: "managerName",
+        },
+      },
+      {
+        $lookup: {
+          from: "projects",
+          localField: "_id",
+          foreignField: "projectId",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+          as: "projectName",
+        },
+      },
+      {
+        $lookup: {
+          from: "clients",
+          localField: "_id",
+          foreignField: "clientId",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+          as: "clientName",
+        },
+      },
+      {
+        $addFields: {
+          managerName: {
+            $first: "$managerName.name",
+          },
+          projectName: {
+            $first: "$managerName.name",
+          },
+          clientName: {
+            $first: "$clientName.name",
+          },
+        },
+      },
+    ];
+    const result = await Pagination(req, res, Model, aggregate);
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Get invoices successfully.",
+      result
+    );
   } catch (error) {
     Comman.setResponse(res, 400, false, "Something went wrong, please retry");
   }

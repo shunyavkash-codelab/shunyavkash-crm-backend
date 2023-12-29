@@ -57,6 +57,15 @@ const invoiceSchema = new mongoose.Schema(
     totals: {
       type: Object,
     },
+    status: {
+      type: String,
+      enum: ["success", "pending"],
+      default: "pending",
+    },
+    watermark: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true, versionKey: false }
 );
