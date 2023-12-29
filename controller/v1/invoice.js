@@ -26,16 +26,23 @@ exports.addInvoice = asyncHandler(async (req, res, next) => {
     let currDate = new Date();
     let year = currDate.getFullYear();
     const invoiceNumber = await InvoiceNumber.findOne({ year: year });
-    // await Model.create(req.body);
+    await Model.create(req.body);
 
     let DatabaseNumber = invoiceNumber.number.toString().padStart(3, "0");
     let reqNumber = req.body.invoiceNumber.toString().slice(8);
     if (Number(DatabaseNumber) + 1 == reqNumber) {
-      console.log("innn");
       Comman.incrementInvoiceNumber();
     }
     return Comman.setResponse(res, 201, true, "Create invoice successfully");
   } catch (error) {
+    console.log(error.code, "-----------------37");
+    if (error.code == 11000)
+      return Comman.setResponse(
+        res,
+        409,
+        false,
+        "This invoice already generated."
+      );
     Comman.setResponse(res, 400, false, "Something went wrong, please retry");
   }
 });
@@ -47,7 +54,6 @@ exports.checkInvoiceNum = asyncHandler(async (req, res, next) => {
     const checkInvoiceNo = await Model.findOne({
       invoiceNumber: invoiceNo,
     });
-    console.log(checkInvoiceNo);
     if (checkInvoiceNo) {
       return Comman.setResponse(
         res,
