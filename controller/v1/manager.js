@@ -400,10 +400,37 @@ exports.editManager = asyncHandler(async (req, res, next) => {
   }
 });
 
-// get employees
+// get multiple employees
 exports.getEmployees = asyncHandler(async (req, res, next) => {
   try {
     let search = { role: 2, invitationStatus: 1 };
+    if (req.query.search) {
+      search.name = { $regex: req.query.search, $options: "i" };
+    }
+    const aggregate = [{ $match: search }];
+    const result = await Pagination(req, res, Model, aggregate);
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Get employee successfully.",
+      result
+    );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// get all manager/employee
+exports.getAllEmployees = asyncHandler(async (req, res, next) => {
+  try {
+    let search = { $or: [{ role: 1 }, { role: 2 }] };
     if (req.query.search) {
       search.name = { $regex: req.query.search, $options: "i" };
     }

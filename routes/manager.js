@@ -10,6 +10,7 @@ const {
   forgetPassword,
   resetPassword,
   changePassword,
+  getAllEmployees,
 } = require("../controller/v1/manager");
 const Schema = require("../validationSchema/managerSchema");
 const errorHandal = require("../middleware/comman").errorHandal;
@@ -49,6 +50,9 @@ router.get("/get-managers", authenticateToken, getManagers);
 
 // multiple get employee
 router.get("/get-employee", authenticateToken, getEmployees);
+
+// get All Employees
+router.get("/get-all-employees", authenticateToken, auth(0), getAllEmployees);
 
 // single get manager
 router.get(
