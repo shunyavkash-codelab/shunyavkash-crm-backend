@@ -5,11 +5,13 @@ const {
   addInvoice,
   checkInvoiceNum,
   invoiceList,
+  getInvoiceById,
 } = require("../controller/v1/invoice");
 const errorHandal = require("../middleware/comman").errorHandal;
 const { getRecord } = require("../middleware/getRecord");
 const Invoice = require("../model/invoice");
 const { authenticateToken, auth } = require("../middleware/verifyToken");
+const Schema = require("../validationSchema/invoiceSchema");
 var Model = Invoice;
 
 // create new bank
@@ -33,5 +35,16 @@ router.get(
 
 // check invoice number exist or not
 router.get("/invoices", authenticateToken, auth(0), invoiceList);
+
+// get single invoice
+router.get(
+  "/:id",
+  authenticateToken,
+  auth(0),
+  Schema.getInvoiceByIdSchema,
+  errorHandal,
+  getRecord(Model),
+  getInvoiceById
+);
 
 module.exports = router;

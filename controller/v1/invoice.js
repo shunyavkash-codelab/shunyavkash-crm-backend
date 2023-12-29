@@ -96,8 +96,8 @@ exports.invoiceList = asyncHandler(async (req, res, next) => {
       {
         $lookup: {
           from: "projects",
-          localField: "_id",
-          foreignField: "projectId",
+          localField: "projectId",
+          foreignField: "_id",
           pipeline: [
             {
               $project: {
@@ -111,8 +111,8 @@ exports.invoiceList = asyncHandler(async (req, res, next) => {
       {
         $lookup: {
           from: "clients",
-          localField: "_id",
-          foreignField: "clientId",
+          localField: "clientId",
+          foreignField: "_id",
           pipeline: [
             {
               $project: {
@@ -144,6 +144,95 @@ exports.invoiceList = asyncHandler(async (req, res, next) => {
       true,
       "Get invoices successfully.",
       result
+    );
+  } catch (error) {
+    Comman.setResponse(res, 400, false, "Something went wrong, please retry");
+  }
+});
+
+// get single invoice
+exports.getInvoiceById = asyncHandler(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return Comman.setResponse(res, 400, false, "Required params not found.", {
+      errors: errors.array(),
+    });
+  }
+  try {
+    let invoice = await Model.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(req.params.id),
+        },
+      },
+      {
+        $lookup: {
+          from: "managers",
+          localField: "managerId",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+          as: "managerName",
+        },
+      },
+      {
+        $lookup: {
+          from: "projects",
+          localField: "projectId",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+          as: "projectName",
+        },
+      },
+      {
+        $lookup: {
+          from: "clients",
+          localField: "clientId",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+          as: "clientName",
+        },
+      },
+      {
+        $addFields: {
+          managerName: {
+            $first: "$managerName.name",
+          },
+          projectName: {
+            $first: "$managerName.name",
+          },
+          clientName: {
+            $first: "$clientName.name",
+          },
+        },
+      },
+      {
+        $unset: "project",
+      },
+    ]);
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Get invoice successfully.",
+      invoice[0]
     );
   } catch (error) {
     Comman.setResponse(res, 400, false, "Something went wrong, please retry");
