@@ -3,7 +3,7 @@ async function Pagination(req, res, model, aggregationSchema) {
   const limit = parseInt(req.query.limit) || 10;
   const column_name = req.query?.sortField || "createdAt";
   const OrderBy = req.query?.orderBy == "ASC" ? 1 : -1;
-  const sortData = req.query?.sortField ? { [column_name]: OrderBy } : 0;
+  const sortData = { [column_name]: OrderBy };
 
   const skip = (page - 1) * limit;
 

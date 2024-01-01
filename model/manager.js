@@ -10,7 +10,6 @@ const managerSchema = new mongoose.Schema(
     },
     companyName: {
       type: String,
-      required: true,
     },
     companyLogo: {
       type: String,
@@ -37,15 +36,24 @@ const managerSchema = new mongoose.Schema(
     },
     mobileCode: {
       type: String,
-      required: true,
     },
     mobileNumber: {
       type: String,
-      required: true,
-      unique: [true, "client is registered on the given mobile number"],
     },
     address: {
       type: String,
+      trim: true,
+    },
+    address2: {
+      type: String,
+      trim: true,
+    },
+    landmark: {
+      type: String,
+      trim: true,
+    },
+    pincode: {
+      type: Number,
       trim: true,
     },
     gender: {
@@ -62,6 +70,24 @@ const managerSchema = new mongoose.Schema(
     signature: {
       type: String,
     },
+    role: {
+      type: Number,
+      enum: [0, 1, 2], // 0 - admin, 1 - manager, 2 - employee
+    },
+    jobRole: {
+      type: String, // frontend, backend, organization
+    },
+    resetPasswordToken: {
+      type: String,
+    },
+    resetPasswordDate: {
+      type: Date,
+    },
+    invitationStatus: {
+      type: Number,
+      enum: [0, 1], // 0 - not accepted, 1 - accept
+      default: 0,
+    },
   },
 
   { timestamps: true, versionKey: false }
@@ -71,6 +97,7 @@ managerSchema.methods.generateAuthToken = async function () {
   const token = jwt.sign(
     {
       id: this._id,
+      role: this.role,
     },
     process.env.JWT_SECRET_KEY,
     { expiresIn: process.env.JWT_EXPIRE_IN }
