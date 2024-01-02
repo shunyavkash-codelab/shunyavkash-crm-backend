@@ -13,6 +13,8 @@ const Comman = require("./middleware/comman");
 const Currency = require("./model/currency");
 var adminRouter = require("./routes/admin");
 var taskRouter = require("./routes/task");
+var { fileUploading } = require("./middleware/fileUploading");
+const { Result } = require("express-validator");
 // Allows cross-origin requests
 var allowedOrigins = [
   "http://localhost:3000",
@@ -67,6 +69,16 @@ router.get("/currency", async (req, res) => {
     "Get currency successfully.",
     currencyList
   );
+});
+
+// file uploading
+router.post("/file-uploading", async (req, res) => {
+  try {
+    let data = await fileUploading(req.files.files);
+    res.send(data);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 // set default routes
