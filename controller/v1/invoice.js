@@ -23,6 +23,17 @@ exports.generateInvoiceNum = asyncHandler(async (req, res, next) => {
 // add invoice
 exports.addInvoice = asyncHandler(async (req, res, next) => {
   try {
+    let invoiceNo = req.body.invoiceNumber;
+    const checkInvoiceNo = await Model.findOne({ invoiceNumber: invoiceNo });
+    if (checkInvoiceNo) {
+      //update
+      await Model.findOneAndUpdate({ invoiceNumber: invoiceNo }, req.body, {
+        new: true,
+      });
+      return Comman.setResponse(res, 200, true, "Update invoice successfully");
+    }
+
+    // create
     let currDate = new Date();
     let year = currDate.getFullYear();
     const invoiceNumber = await InvoiceNumber.findOne({ year: year });
