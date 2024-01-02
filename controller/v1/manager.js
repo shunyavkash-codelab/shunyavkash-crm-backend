@@ -147,10 +147,8 @@ exports.login = asyncHandler(async (req, res, next) => {
     });
   }
   try {
-    const { email, password, mobileNumber } = req.body;
-    const check = await Model.findOne({
-      $or: [{ email: email }, { mobileNumber: mobileNumber }],
-    }).select("+password");
+    const { email, password } = req.body;
+    const check = await Model.findOne({ email: email }).select("+password");
     if (!check) {
       return Comman.setResponse(res, 404, false, "user does not exist");
     }
@@ -404,7 +402,7 @@ exports.editManager = asyncHandler(async (req, res, next) => {
 // get multiple employees
 exports.getEmployees = asyncHandler(async (req, res, next) => {
   try {
-    let search = { role: 2, invitationStatus: 1 };
+    let search = { role: 2, invitationStatus: 1, isDeleted: 0 };
     if (req.query.search) {
       search.name = { $regex: req.query.search, $options: "i" };
     }
@@ -458,7 +456,11 @@ exports.getAllEmployees = asyncHandler(async (req, res, next) => {
 // delete employee and manager
 exports.deleteEmployee = asyncHandler(async (req, res, next) => {
   try {
-    await Model.findByIdAndDelete(res.record._id);
+    await Model.findByIdAndUpdate(
+      res.record._id,
+      { isDeleted: 1 },
+      { new: true }
+    );
     return Comman.setResponse(res, 200, true, "Deleted successfully.");
   } catch (error) {
     console.log(error);
