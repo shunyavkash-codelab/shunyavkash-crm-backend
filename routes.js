@@ -14,7 +14,10 @@ const Currency = require("./model/currency");
 var adminRouter = require("./routes/admin");
 var taskRouter = require("./routes/task");
 // Allows cross-origin requests
-var allowedOrigins = ["http://localhost:3000"];
+var allowedOrigins = [
+  "http://localhost:3000",
+  "https://shunyavkash-crm-frontend-2q8l7pc3o.vercel.app",
+];
 router.use(
   cors({
     credentials: true,
