@@ -14,7 +14,8 @@ exports.connectDB = async () => {
         name: "hiren",
         companyName: "shunyavkash",
         email: "hiren.polara@shunyavkash.com",
-        password: "12345678",
+        password:
+          "$2b$10$BG/MyMnf2I7fUSc2SR3upeZQ.KddgY1m9FYoqAeZp/RqXNLdjBvj.",
         mobileCode: "+91",
         mobileNumber: "9876567890",
         address: "311, Ambika Pinnacle, Mota Varachha, Surat, Gujarat",
