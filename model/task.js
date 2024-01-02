@@ -40,6 +40,10 @@ const taskSchema = new mongoose.Schema(
       type: String, // Urgent, High, Normal, Low
       required: true,
     },
+    perHourCharge: {
+      type: Number,
+      required: true,
+    },
   },
 
   { timestamps: true, versionKey: false }

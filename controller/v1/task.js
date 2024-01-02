@@ -6,6 +6,8 @@ const { default: mongoose } = require("mongoose");
 const { validationResult } = require("express-validator");
 var Model = Task;
 
+const fieldNames = ["taskName", "hours", "taskPriority", "perHourCharge"];
+
 // create task
 exports.add = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
@@ -15,8 +17,18 @@ exports.add = asyncHandler(async (req, res, next) => {
     });
   }
   try {
-    req.body.managerId = req.user.id;
-    const task = await Model.create(req.body);
+    let managerId = req.user.id;
+
+    const task = await Model.create({
+      managerId: managerId,
+      projectId: req.body.projectId,
+      taskNo: req.body.taskNo,
+      taskName: req.body.taskName,
+      hours: req.body.hours,
+      status: "to do",
+      taskPriority: req.body.taskPriority,
+      perHourCharge: req.body.perHourCharge,
+    });
     return Comman.setResponse(res, 201, true, "Task added successfully.", task);
   } catch (error) {
     console.log(error);
@@ -79,6 +91,38 @@ exports.gettaskByProject = asyncHandler(async (req, res, next) => {
     ]);
     return Comman.setResponse(res, 200, true, "Get task successfully.", task);
   } catch (error) {
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// edit task
+exports.edit = asyncHandler(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return Comman.setResponse(res, 400, false, "Required params not found.", {
+      errors: errors.array(),
+    });
+  }
+  try {
+    let taskId = req.params.id;
+    await Model.findByIdAndUpdate(
+      { _id: taskId },
+      {
+        taskName: req.body.taskName,
+        hours: req.body.hours,
+        taskPriority: req.body.taskPriority,
+        perHourCharge: req.body.perHourCharge,
+      },
+      { new: true }
+    );
+    return Comman.setResponse(res, 200, true, "Update task successfully.");
+  } catch (error) {
+    console.log(error);
     return Comman.setResponse(
       res,
       400,
