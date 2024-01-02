@@ -17,6 +17,7 @@ var taskRouter = require("./routes/task");
 var allowedOrigins = [
   "http://localhost:3000",
   "https://shunyavkash-crm-frontend-2q8l7pc3o.vercel.app",
+  "https://shunyavkash-crm-frontend.vercel.app",
 ];
 router.use(
   cors({
