@@ -151,7 +151,12 @@ exports.login = asyncHandler(async (req, res, next) => {
       return Comman.setResponse(res, 404, false, "user does not exist");
     }
     if (!(await bcrypt.compare(password, check.password)))
-      return Comman.setResponse(res, 401, false, "Incorrect password.");
+      return Comman.setResponse(
+        res,
+        401,
+        false,
+        "Incorrect password or email."
+      );
 
     delete check._doc.password;
     // generate tokens

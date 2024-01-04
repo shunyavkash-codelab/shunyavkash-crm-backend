@@ -1,3 +1,4 @@
+const { validationResult } = require("express-validator");
 const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
@@ -22,6 +23,12 @@ exports.generateInvoiceNum = asyncHandler(async (req, res, next) => {
 
 // add invoice
 exports.addInvoice = asyncHandler(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return Comman.setResponse(res, 400, false, "Required params not found.", {
+      errors: errors.array(),
+    });
+  }
   try {
     let invoiceNo = req.body.invoiceNumber;
     const checkInvoiceNo = await Model.findOne({ invoiceNumber: invoiceNo });

@@ -6,7 +6,8 @@ Schema.addSchema = [
   check("invoiceNumber")
     .notEmpty()
     .withMessage("Invoice number is a required field")
-    .isLength(11),
+    .isLength(11)
+    .withMessage("The invoice number should consist of 11 digits."),
 ];
 
 Schema.getInvoiceByIdSchema = [

@@ -59,7 +59,6 @@ exports.getAdminByRole = asyncHandler(async (req, res, next) => {
 exports.editAdmin = asyncHandler(async (req, res, next) => {
   try {
     const admin = await Manager.findOne({ role: 0 });
-    console.log(admin, "-----------------51");
     if (!admin) {
       return Comman.setResponse(res, 404, false, "Admin does not exist.");
     }
