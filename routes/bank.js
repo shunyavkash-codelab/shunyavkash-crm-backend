@@ -18,7 +18,7 @@ var Model = Bank;
 router.post("/add", Schema.addSchema, authenticateToken, auth(0, 1), add);
 
 // multiple get bank
-router.get("/get-banks", authenticateToken, auth(1, 2), getBanks);
+router.get("/get-banks", authenticateToken, auth(0, 1, 2), getBanks);
 
 // single get bank
 router.get(

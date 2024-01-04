@@ -11,7 +11,6 @@ var Model = Client;
 const fieldNames = [
   "name",
   "companyName",
-  "companyLogo",
   "websiteURL",
   "email",
   "mobileCode",

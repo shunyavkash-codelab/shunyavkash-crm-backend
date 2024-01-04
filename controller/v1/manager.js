@@ -7,13 +7,13 @@ const Manager = require("../../model/manager");
 const jwt = require("jsonwebtoken");
 const { default: mongoose } = require("mongoose");
 const { validationResult } = require("express-validator");
+const { fileUploading } = require("../../middleware/fileUploading");
 var Model = Manager;
 
 // use edit manager field
 const fieldNames = [
   "name",
   "companyName",
-  "companyLogo",
   "websiteURL",
   "mobileCode",
   "mobileNumber",
@@ -21,8 +21,6 @@ const fieldNames = [
   "address2",
   "landmark",
   "pincode",
-  "profile_img",
-  "signature",
   "role",
 ];
 
@@ -374,18 +372,12 @@ exports.getManagers = asyncHandler(async (req, res, next) => {
 // edit manager details
 exports.editManager = asyncHandler(async (req, res, next) => {
   try {
-    // check login managerID and edit managerID
-    // if (req.user.id.toString() !== req.params.id) {
-    //   return Comman.setResponse(
-    //     res,
-    //     401,
-    //     false,
-    //     "Unauthorized access to this route."
-    //   );
-    // }
     fieldNames.forEach((field) => {
       if (req.body[field] != null) res.record[field] = req.body[field];
     });
+    if (req.files?.profile_img) {
+      res.record.profile_img = await fileUploading(req.files.profile_img);
+    }
     await Model.updateOne({ _id: req.params.id }, res.record, { new: true });
     return Comman.setResponse(res, 200, true, "Update manager successfully.");
   } catch (error) {
