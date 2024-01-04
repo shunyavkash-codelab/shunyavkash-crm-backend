@@ -4,6 +4,7 @@ const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
 const Client = require("../../model/client");
 const { validationResult } = require("express-validator");
+const { fileUploading } = require("../../middleware/fileUploading");
 var Model = Client;
 
 // use edit client field
@@ -45,17 +46,17 @@ exports.add = asyncHandler(async (req, res, next) => {
         "This mobile number already exists."
       );
     }
-    let obj = {
-      name: req.body.name,
-      companyName: req.body.companyName,
-      companyLogo: req.body.companyLogo,
-      websiteURL: req.body.websiteURL,
-      email: req.body.email,
-      mobileCode: req.body.mobileCode,
-      mobileNumber: req.body.mobileNumber,
-      address: req.body.address,
-      managerId: req.user._id,
-    };
+    let obj = {};
+    fieldNames.forEach((field) => {
+      if (req.body[field] != null) obj[field] = req.body[field];
+    });
+    obj.managerId = req.user._id;
+    const entries = Object.entries(req.files);
+
+    for (const [key, value] of entries) {
+      let url = await fileUploading(value);
+      obj[key] = url;
+    }
     const client = await Model.create(obj);
     return Comman.setResponse(
       res,
