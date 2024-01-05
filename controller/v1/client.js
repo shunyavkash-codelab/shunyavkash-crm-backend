@@ -50,11 +50,13 @@ exports.add = asyncHandler(async (req, res, next) => {
       if (req.body[field] != null) obj[field] = req.body[field];
     });
     obj.managerId = req.user._id;
-    const entries = Object.entries(req.files);
+    if (req.files) {
+      const entries = Object.entries(req.files);
 
-    for (const [key, value] of entries) {
-      let url = await fileUploading(value);
-      obj[key] = url;
+      for (const [key, value] of entries) {
+        let url = await fileUploading(value);
+        obj[key] = url;
+      }
     }
     const client = await Model.create(obj);
     return Comman.setResponse(
