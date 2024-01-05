@@ -10,9 +10,9 @@ const invoiceSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Client",
     },
-    managerId: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Manager",
+      ref: "User",
     },
     taskIds: {
       type: [mongoose.Schema.Types.ObjectId],

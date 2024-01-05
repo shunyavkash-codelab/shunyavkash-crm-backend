@@ -3,9 +3,9 @@ const validator = require("validator");
 
 const clientSchema = new mongoose.Schema(
   {
-    managerId: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Manager",
+      ref: "User",
       required: true,
     },
     name: {

@@ -2,7 +2,7 @@ var express = require("express");
 var cors = require("cors");
 var router = express.Router();
 var clientRouter = require("./routes/client");
-var managerRouter = require("./routes/manager");
+var userRouter = require("./routes/user");
 var defaultRoutes = require("./routes/default");
 var projectRouter = require("./routes/project");
 var bankRouter = require("./routes/bank");
@@ -41,7 +41,7 @@ router.use(
 
 // router
 router.use("/client", clientRouter);
-router.use("/manager", managerRouter);
+router.use("/user", userRouter);
 router.use("/project", projectRouter);
 router.use("/bank", bankRouter);
 router.use("/dashboard", dashboardRouter);

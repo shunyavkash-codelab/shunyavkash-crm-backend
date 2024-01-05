@@ -3,14 +3,14 @@ const Comman = require("../../middleware/comman");
 const bcrypt = require("bcrypt");
 const Pagination = require("../../middleware/pagination");
 const sendMail = require("../../utils/mailer");
-const Manager = require("../../model/manager");
+const User = require("../../model/user");
 const jwt = require("jsonwebtoken");
 const { default: mongoose } = require("mongoose");
 const { validationResult } = require("express-validator");
 const { fileUploading } = require("../../middleware/fileUploading");
-var Model = Manager;
+var Model = User;
 
-// use edit manager field
+// use edit user field
 const fieldNames = [
   "name",
   "companyName",
@@ -24,7 +24,7 @@ const fieldNames = [
   "role",
 ];
 
-// add manager by admin
+// add user by admin
 exports.addEmployee = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -48,11 +48,7 @@ exports.addEmployee = asyncHandler(async (req, res, next) => {
       email: email,
       password: await bcrypt.hash(password || null, 10),
       role:
-        role == "superAdmin"
-          ? 0
-          : role == "manager"
-          ? 1
-          : role == "employee" && 2,
+        role == "superAdmin" ? 0 : role == "user" ? 1 : role == "employee" && 2,
     });
     const admin = await Model.findOne({ role: 0 });
     const subject = "Welcome to CRM - Your Login Credentials";
@@ -186,27 +182,27 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
     });
   }
   let email = req.body.email;
-  const manager = await Model.findOne({ email: email });
-  const accessToken = await manager.generateAuthToken();
+  const user = await Model.findOne({ email: email });
+  const accessToken = await user.generateAuthToken();
   // return console.log(accessToken);
-  if (!manager) {
+  if (!user) {
     return Comman.setResponse(res, 404, false, "user does not exist");
   }
   const subject = "Forget Password";
   const message =
-    `<div style="font-size:16px"><span style="font-size:18px;">Hi ${manager.name}!</span><br/> Forgot your password? No worries just click this link to reset it.<br />` +
+    `<div style="font-size:16px"><span style="font-size:18px;">Hi ${user.name}!</span><br/> Forgot your password? No worries just click this link to reset it.<br />` +
     `<br />Tired of remembering your password? Let CRM remember it for you! Just let your smartphone autofill and remember your password!<br /><br />` +
     `<a style="text-decoration: none; background-color:green;padding:8px 16px; color:white" href="http://localhost:3000/confirm-password?key=${accessToken}">Reset Password</a></div>`;
   await sendMail(email, subject, message)
     .then(async (re) => {
-      manager.resetPasswordToken = accessToken;
-      manager.resetPasswordDate = new Date();
-      await manager.save();
+      user.resetPasswordToken = accessToken;
+      user.resetPasswordDate = new Date();
+      await user.save();
       return Comman.setResponse(
         res,
         200,
         true,
-        `Email is sent on ${manager.email} please check your email.`
+        `Email is sent on ${user.email} please check your email.`
       );
     })
     .catch((e) => next(e));
@@ -223,7 +219,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   let key = req.query.key;
   jwt.verify(key, process.env.JWT_SECRET_KEY, async (err, user) => {
     if (err) return res.status(401).send({ message: err.message });
-    let existUser = await Manager.findById(user.id);
+    let existUser = await User.findById(user.id);
     if (!existUser)
       return Comman.setResponse(res, 404, false, "User not found.");
     if (existUser.resetPasswordToken !== key) {
@@ -271,8 +267,8 @@ exports.changePassword = asyncHandler(async (req, res, next) => {
   let password = req.body.password;
   let confirmPassword = req.body.confirmPassword;
 
-  const manager = await Model.findOne({ _id: req.user.id }).select("+password");
-  if (!(await bcrypt.compare(oldPassword, manager.password))) {
+  const user = await Model.findOne({ _id: req.user.id }).select("+password");
+  if (!(await bcrypt.compare(oldPassword, user.password))) {
     return Comman.setResponse(res, 401, false, "Old password is incorrect.");
   }
   if (password !== confirmPassword)
@@ -283,20 +279,19 @@ exports.changePassword = asyncHandler(async (req, res, next) => {
       "Your password and confirmation password do not match."
     );
 
-  (manager.password = await bcrypt.hash(password || null, 10)),
-    await manager.save();
+  (user.password = await bcrypt.hash(password || null, 10)), await user.save();
   return Comman.setResponse(res, 200, true, "Password change successful.");
 });
 
-// get single manager
-exports.getManagerById = asyncHandler(async (req, res, next) => {
+// get single user
+exports.getUserById = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return Comman.setResponse(res, 400, false, "Required params not found.", {
       errors: errors.array(),
     });
   }
-  const manager = await Model.aggregate([
+  const user = await Model.aggregate([
     {
       $match: {
         _id: new mongoose.Types.ObjectId(req.params.id),
@@ -304,7 +299,7 @@ exports.getManagerById = asyncHandler(async (req, res, next) => {
     },
     {
       $lookup: {
-        from: "managers",
+        from: "users",
         localField: "reference",
         foreignField: "_id",
         pipeline: [
@@ -314,18 +309,18 @@ exports.getManagerById = asyncHandler(async (req, res, next) => {
             },
           },
         ],
-        as: "manager",
+        as: "user",
       },
     },
     {
       $addFields: {
         referenceName: {
-          $first: "$manager.name",
+          $first: "$user.name",
         },
       },
     },
     {
-      $unset: "manager",
+      $unset: "user",
     },
   ]);
   try {
@@ -333,8 +328,8 @@ exports.getManagerById = asyncHandler(async (req, res, next) => {
       res,
       200,
       true,
-      "Get client successfully.",
-      manager[0]
+      "Get user successfully.",
+      user[0]
     );
   } catch (error) {
     console.log(error);
@@ -347,8 +342,8 @@ exports.getManagerById = asyncHandler(async (req, res, next) => {
   }
 });
 
-// get multiple manager
-exports.getManagers = asyncHandler(async (req, res, next) => {
+// get multiple user
+exports.getUsers = asyncHandler(async (req, res, next) => {
   try {
     let search = { role: 1 };
     if (req.query.search) {
@@ -360,7 +355,7 @@ exports.getManagers = asyncHandler(async (req, res, next) => {
       res,
       200,
       true,
-      "Get managers successfully.",
+      "Get users successfully.",
       result
     );
   } catch (error) {
@@ -374,8 +369,8 @@ exports.getManagers = asyncHandler(async (req, res, next) => {
   }
 });
 
-// edit manager details
-exports.editManager = asyncHandler(async (req, res, next) => {
+// edit user details
+exports.editUser = asyncHandler(async (req, res, next) => {
   try {
     fieldNames.forEach((field) => {
       if (req.body[field] != null) res.record[field] = req.body[field];
@@ -384,7 +379,7 @@ exports.editManager = asyncHandler(async (req, res, next) => {
       res.record.profile_img = await fileUploading(req.files.profile_img);
     }
     await Model.updateOne({ _id: req.params.id }, res.record, { new: true });
-    return Comman.setResponse(res, 200, true, "Update manager successfully.");
+    return Comman.setResponse(res, 200, true, "Update user successfully.");
   } catch (error) {
     console.log(error);
     return Comman.setResponse(
@@ -423,7 +418,7 @@ exports.getEmployees = asyncHandler(async (req, res, next) => {
   }
 });
 
-// get all manager/employee
+// get all user/employee
 exports.getAllEmployees = asyncHandler(async (req, res, next) => {
   try {
     let search = { $or: [{ role: 1 }, { role: 2 }] };
@@ -450,7 +445,7 @@ exports.getAllEmployees = asyncHandler(async (req, res, next) => {
   }
 });
 
-// delete employee and manager
+// delete employee and user
 exports.deleteEmployee = asyncHandler(async (req, res, next) => {
   try {
     await Model.findByIdAndUpdate(

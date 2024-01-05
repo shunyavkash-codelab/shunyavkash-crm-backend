@@ -34,7 +34,7 @@ exports.add = asyncHandler(async (req, res, next) => {
     if (checkPrefix) {
       return Comman.setResponse(res, 409, false, "This prefix already exists.");
     }
-    req.body.managerId = req.user.id;
+    req.body.userId = req.user.id;
     const project = await Model.create(req.body);
     return Comman.setResponse(
       res,
@@ -101,8 +101,8 @@ exports.getProjectById = asyncHandler(async (req, res, next) => {
       },
       {
         $lookup: {
-          from: "managers",
-          localField: "managerId",
+          from: "users",
+          localField: "userId",
           foreignField: "_id",
           pipeline: [
             {
@@ -111,7 +111,7 @@ exports.getProjectById = asyncHandler(async (req, res, next) => {
               },
             },
           ],
-          as: "managerName",
+          as: "userName",
         },
       },
       {
@@ -134,8 +134,8 @@ exports.getProjectById = asyncHandler(async (req, res, next) => {
           clientName: {
             $first: "$clientName.name",
           },
-          managerName: {
-            $first: "$managerName.name",
+          userName: {
+            $first: "$userName.name",
           },
         },
       },
@@ -169,8 +169,8 @@ exports.getProjects = asyncHandler(async (req, res, next) => {
       { $match: search },
       {
         $lookup: {
-          from: "managers",
-          localField: "managerId",
+          from: "users",
+          localField: "userId",
           foreignField: "_id",
           pipeline: [
             {
@@ -179,7 +179,7 @@ exports.getProjects = asyncHandler(async (req, res, next) => {
               },
             },
           ],
-          as: "managerName",
+          as: "userName",
         },
       },
       {
@@ -202,8 +202,8 @@ exports.getProjects = asyncHandler(async (req, res, next) => {
           clientName: {
             $first: "$clientName.name",
           },
-          managerName: {
-            $first: "$managerName.name",
+          userName: {
+            $first: "$userName.name",
           },
         },
       },
@@ -258,7 +258,7 @@ exports.getProjectsByClient = asyncHandler(async (req, res, next) => {
           _id: 1,
           name: 1,
           clientId: 1,
-          managerId: 1,
+          userId: 1,
           description: 1,
           startDate: 1,
           endDate: 1,

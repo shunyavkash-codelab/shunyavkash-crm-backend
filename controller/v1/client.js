@@ -49,7 +49,7 @@ exports.add = asyncHandler(async (req, res, next) => {
     fieldNames.forEach((field) => {
       if (req.body[field] != null) obj[field] = req.body[field];
     });
-    obj.managerId = req.user._id;
+    obj.userId = req.user._id;
     if (req.files) {
       const entries = Object.entries(req.files);
 
@@ -94,8 +94,8 @@ exports.getClientById = asyncHandler(async (req, res, next) => {
       },
       {
         $lookup: {
-          from: "managers",
-          localField: "managerId",
+          from: "users",
+          localField: "userId",
           foreignField: "_id",
           pipeline: [
             {
@@ -104,7 +104,7 @@ exports.getClientById = asyncHandler(async (req, res, next) => {
               },
             },
           ],
-          as: "managerName",
+          as: "userName",
         },
       },
       {
@@ -127,8 +127,8 @@ exports.getClientById = asyncHandler(async (req, res, next) => {
       },
       {
         $addFields: {
-          managerName: {
-            $first: "$managerName.name",
+          userName: {
+            $first: "$userName.name",
           },
           projectName: {
             $map: {
@@ -172,8 +172,8 @@ exports.getClients = asyncHandler(async (req, res, next) => {
       { $match: search },
       {
         $lookup: {
-          from: "managers",
-          localField: "managerId",
+          from: "users",
+          localField: "userId",
           foreignField: "_id",
           pipeline: [
             {
@@ -182,7 +182,7 @@ exports.getClients = asyncHandler(async (req, res, next) => {
               },
             },
           ],
-          as: "managerName",
+          as: "userName",
         },
       },
       {
@@ -205,8 +205,8 @@ exports.getClients = asyncHandler(async (req, res, next) => {
       },
       {
         $addFields: {
-          managerName: {
-            $first: "$managerName.name",
+          userName: {
+            $first: "$userName.name",
           },
           projectName: {
             $map: {

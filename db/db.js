@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
-const Manager = require("../model/manager");
+const User = require("../model/user");
 
 exports.connectDB = async () => {
   try {
     mongoose.set("strictQuery", false);
     const con = await mongoose.connect(process.env.MONGO_URI);
     console.log("mongodb is connected", con.connection.host);
-    let admin = await Manager.findOne({
+    let admin = await User.findOne({
       email: "hiren.polara@shunyavkash.com",
     });
     if (!admin) {
-      await Manager.create({
+      await User.create({
         name: "hiren",
         companyName: "shunyavkash",
         email: "hiren.polara@shunyavkash.com",

@@ -17,10 +17,10 @@ exports.add = asyncHandler(async (req, res, next) => {
     });
   }
   try {
-    let managerId = req.user.id;
+    let userId = req.user.id;
 
     const task = await Model.create({
-      managerId: managerId,
+      userId: userId,
       projectId: req.body.projectId,
       taskNo: req.body.taskNo,
       taskName: req.body.taskName,
@@ -73,7 +73,7 @@ exports.gettaskByProject = asyncHandler(async (req, res, next) => {
       {
         $project: {
           _id: 1,
-          managerId: 1,
+          userId: 1,
           projectId: 1,
           taskNo: 1,
           taskName: 1,
