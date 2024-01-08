@@ -93,7 +93,7 @@ const userSchema = new mongoose.Schema(
     employeeId: {
       type: String,
     },
-    jobRole: {
+    designation: {
       type: String, // frontend, backend, organization
     },
     role: {
