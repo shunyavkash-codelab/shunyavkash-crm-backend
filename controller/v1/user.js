@@ -342,7 +342,7 @@ exports.getUserById = asyncHandler(async (req, res, next) => {
   }
 });
 
-// get multiple user
+// get multiple user by manager role wise
 exports.getUsers = asyncHandler(async (req, res, next) => {
   try {
     let search = { role: 1 };
