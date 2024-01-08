@@ -3,22 +3,22 @@ var router = express.Router();
 const {
   addEmployee,
   login,
-  getManagerById,
-  getManagers,
+  getUserById,
+  getUsers,
   getEmployees,
-  editManager,
+  editUser,
   forgetPassword,
   resetPassword,
   changePassword,
   getAllEmployees,
   deleteEmployee,
-} = require("../controller/v1/manager");
-const Schema = require("../validationSchema/managerSchema");
+} = require("../controller/v1/user");
+const Schema = require("../validationSchema/userSchema");
 const errorHandal = require("../middleware/comman").errorHandal;
 const { getRecord } = require("../middleware/getRecord");
-const Manager = require("../model/manager");
+const User = require("../model/user");
 const { authenticateToken, auth } = require("../middleware/verifyToken");
-var Model = Manager;
+var Model = User;
 
 // add employee
 router.post(
@@ -46,8 +46,8 @@ router.post(
   changePassword
 );
 
-// multiple get manager
-router.get("/get-managers", authenticateToken, getManagers);
+// multiple get user
+router.get("/get-users", authenticateToken, getUsers);
 
 // multiple get employee
 router.get("/get-employee", authenticateToken, getEmployees);
@@ -55,27 +55,27 @@ router.get("/get-employee", authenticateToken, getEmployees);
 // get All Employees
 router.get("/get-all-employees", authenticateToken, auth(0), getAllEmployees);
 
-// single get manager
+// single get user
 router.get(
   "/:id",
   authenticateToken,
-  Schema.getManagerByIdSchema,
+  // Schema.getUserByIdSchema,
   errorHandal,
   // getRecord(Model),
-  getManagerById
+  getUserById
 );
 
-// edit manager
+// edit user
 router.patch(
   "/:id",
   authenticateToken,
   auth(0, 1, 2),
   errorHandal,
   getRecord(Model),
-  editManager
+  editUser
 );
 
-// delete emaployee and manager
+// delete emaployee and user
 router.delete(
   "/:id",
   authenticateToken,

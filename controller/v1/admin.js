@@ -1,6 +1,6 @@
 const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
-const Manager = require("../../model/manager");
+const User = require("../../model/user");
 
 // use edit admin field
 const fieldNames = [
@@ -16,10 +16,10 @@ const fieldNames = [
 // get admin by role
 exports.getAdminByRole = asyncHandler(async (req, res, next) => {
   try {
-    // const admin = await Manager.findOne({ role: 0 }).select(
+    // const admin = await User.findOne({ role: 0 }).select(
     //   "address address2 landmark pincode email mobileCode mobileNumber companyName"
     // );
-    const admin = await Manager.aggregate([
+    const admin = await User.aggregate([
       {
         $match: {
           role: 0,
@@ -29,7 +29,7 @@ exports.getAdminByRole = asyncHandler(async (req, res, next) => {
         $lookup: {
           from: "banks",
           localField: "_id",
-          foreignField: "managerId",
+          foreignField: "userId",
           as: "bank",
         },
       },
@@ -58,8 +58,7 @@ exports.getAdminByRole = asyncHandler(async (req, res, next) => {
 // admin update
 exports.editAdmin = asyncHandler(async (req, res, next) => {
   try {
-    const admin = await Manager.findOne({ role: 0 });
-    console.log(admin, "-----------------51");
+    const admin = await User.findOne({ role: 0 });
     if (!admin) {
       return Comman.setResponse(res, 404, false, "Admin does not exist.");
     }

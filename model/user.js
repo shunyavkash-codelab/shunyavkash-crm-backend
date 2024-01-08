@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 
-const managerSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -72,7 +72,7 @@ const managerSchema = new mongoose.Schema(
     },
     role: {
       type: Number,
-      enum: [0, 1, 2], // 0 - admin, 1 - manager, 2 - employee
+      enum: [0, 1, 2], // 0 - admin, 1 - user, 2 - employee
     },
     jobRole: {
       type: String, // frontend, backend, organization
@@ -93,12 +93,17 @@ const managerSchema = new mongoose.Schema(
       enum: [0, 1], // 0 - not deleted, 1 - deleted
       default: 0,
     },
+    status: {
+      type: Number,
+      enum: [0, 1], // 0 - active, 1 - deactive
+      default: 0,
+    },
   },
 
   { timestamps: true, versionKey: false }
 );
 //Sign JWT and Return
-managerSchema.methods.generateAuthToken = async function () {
+userSchema.methods.generateAuthToken = async function () {
   const token = jwt.sign(
     {
       id: this._id,
@@ -110,7 +115,7 @@ managerSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
-managerSchema.index({ email: 1 }, { unique: true });
-const Manager = mongoose.model("Manager", managerSchema);
+userSchema.index({ email: 1 }, { unique: true });
+const User = mongoose.model("User", userSchema);
 
-module.exports = Manager;
+module.exports = User;

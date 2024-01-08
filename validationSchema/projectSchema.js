@@ -9,7 +9,6 @@ Schema.addSchema = [
     .notEmpty()
     .withMessage("perHourCharge include country code"),
   check("currency").notEmpty().withMessage("currency is a required field"),
-  check("prefix").notEmpty().withMessage("prefix is a required field"),
 ];
 
 Schema.getProjectByIdSchema = [

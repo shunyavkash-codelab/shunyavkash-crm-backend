@@ -8,7 +8,7 @@ const Project = require("../model/project");
 const { authenticateToken } = require("../middleware/verifyToken");
 var Model = Project;
 
-// get dashbord data like (total manager, total clients, total project, total invoice)
+// get dashbord data like (total user, total clients, total project, total invoice)
 router.get("/dashboard", dashboard);
 
 module.exports = router;

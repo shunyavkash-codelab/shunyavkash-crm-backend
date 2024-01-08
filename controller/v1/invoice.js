@@ -1,3 +1,4 @@
+const { validationResult } = require("express-validator");
 const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
@@ -22,6 +23,12 @@ exports.generateInvoiceNum = asyncHandler(async (req, res, next) => {
 
 // add invoice
 exports.addInvoice = asyncHandler(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return Comman.setResponse(res, 400, false, "Required params not found.", {
+      errors: errors.array(),
+    });
+  }
   try {
     let invoiceNo = req.body.invoiceNumber;
     const checkInvoiceNo = await Model.findOne({ invoiceNumber: invoiceNo });
@@ -91,8 +98,8 @@ exports.invoiceList = asyncHandler(async (req, res, next) => {
       { $match: search },
       {
         $lookup: {
-          from: "managers",
-          localField: "managerId",
+          from: "users",
+          localField: "userId",
           foreignField: "_id",
           pipeline: [
             {
@@ -101,7 +108,7 @@ exports.invoiceList = asyncHandler(async (req, res, next) => {
               },
             },
           ],
-          as: "managerName",
+          as: "userName",
         },
       },
       {
@@ -136,11 +143,11 @@ exports.invoiceList = asyncHandler(async (req, res, next) => {
       },
       {
         $addFields: {
-          managerName: {
-            $first: "$managerName.name",
+          userName: {
+            $first: "$userName.name",
           },
           projectName: {
-            $first: "$managerName.name",
+            $first: "$userName.name",
           },
           clientName: {
             $first: "$clientName.name",
@@ -178,8 +185,8 @@ exports.getInvoiceById = asyncHandler(async (req, res, next) => {
       },
       {
         $lookup: {
-          from: "managers",
-          localField: "managerId",
+          from: "users",
+          localField: "userId",
           foreignField: "_id",
           pipeline: [
             {
@@ -188,7 +195,7 @@ exports.getInvoiceById = asyncHandler(async (req, res, next) => {
               },
             },
           ],
-          as: "managerName",
+          as: "userName",
         },
       },
       {
@@ -223,11 +230,11 @@ exports.getInvoiceById = asyncHandler(async (req, res, next) => {
       },
       {
         $addFields: {
-          managerName: {
-            $first: "$managerName.name",
+          userName: {
+            $first: "$userName.name",
           },
           projectName: {
-            $first: "$managerName.name",
+            $first: "$userName.name",
           },
           clientName: {
             $first: "$clientName.name",

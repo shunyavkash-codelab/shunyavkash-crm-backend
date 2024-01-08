@@ -23,7 +23,7 @@ router.get(
 );
 
 // add invoice
-router.post("/add", authenticateToken, auth(0), addInvoice);
+router.post("/add", Schema.addSchema, authenticateToken, auth(0), addInvoice);
 
 // check invoice number exist or not
 router.get(

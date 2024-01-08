@@ -15,9 +15,9 @@ const projectSchema = new mongoose.Schema(
       ref: "Client",
       required: true,
     },
-    managerId: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Manager",
+      ref: "User",
       required: true,
     },
     description: {
@@ -40,11 +40,11 @@ const projectSchema = new mongoose.Schema(
     payPeriod: {
       type: String, //Weekly, 2 Weeks, 4 Weeks, Monthly
     },
-    prefix: {
-      type: String, // EX. SHU
-      unique: true,
-      required: true,
-    },
+    // prefix: {
+    //   type: String, // EX. SHU
+    //   unique: true,
+    //   required: true,
+    // },
     status: {
       type: String, // initial, inProgress, completed
       default: "initial",

@@ -4,13 +4,13 @@ const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
 const Client = require("../../model/client");
 const { validationResult } = require("express-validator");
+const { fileUploading } = require("../../middleware/fileUploading");
 var Model = Client;
 
 // use edit client field
 const fieldNames = [
   "name",
   "companyName",
-  "companyLogo",
   "websiteURL",
   "email",
   "mobileCode",
@@ -45,17 +45,19 @@ exports.add = asyncHandler(async (req, res, next) => {
         "This mobile number already exists."
       );
     }
-    let obj = {
-      name: req.body.name,
-      companyName: req.body.companyName,
-      companyLogo: req.body.companyLogo,
-      websiteURL: req.body.websiteURL,
-      email: req.body.email,
-      mobileCode: req.body.mobileCode,
-      mobileNumber: req.body.mobileNumber,
-      address: req.body.address,
-      managerId: req.user._id,
-    };
+    let obj = {};
+    fieldNames.forEach((field) => {
+      if (req.body[field] != null) obj[field] = req.body[field];
+    });
+    obj.userId = req.user._id;
+    if (req.files) {
+      const entries = Object.entries(req.files);
+
+      for (const [key, value] of entries) {
+        let url = await fileUploading(value);
+        obj[key] = url;
+      }
+    }
     const client = await Model.create(obj);
     return Comman.setResponse(
       res,
@@ -92,8 +94,8 @@ exports.getClientById = asyncHandler(async (req, res, next) => {
       },
       {
         $lookup: {
-          from: "managers",
-          localField: "managerId",
+          from: "users",
+          localField: "userId",
           foreignField: "_id",
           pipeline: [
             {
@@ -102,7 +104,7 @@ exports.getClientById = asyncHandler(async (req, res, next) => {
               },
             },
           ],
-          as: "managerName",
+          as: "userName",
         },
       },
       {
@@ -125,8 +127,8 @@ exports.getClientById = asyncHandler(async (req, res, next) => {
       },
       {
         $addFields: {
-          managerName: {
-            $first: "$managerName.name",
+          userName: {
+            $first: "$userName.name",
           },
           projectName: {
             $map: {
@@ -170,8 +172,8 @@ exports.getClients = asyncHandler(async (req, res, next) => {
       { $match: search },
       {
         $lookup: {
-          from: "managers",
-          localField: "managerId",
+          from: "users",
+          localField: "userId",
           foreignField: "_id",
           pipeline: [
             {
@@ -180,7 +182,7 @@ exports.getClients = asyncHandler(async (req, res, next) => {
               },
             },
           ],
-          as: "managerName",
+          as: "userName",
         },
       },
       {
@@ -203,8 +205,8 @@ exports.getClients = asyncHandler(async (req, res, next) => {
       },
       {
         $addFields: {
-          managerName: {
-            $first: "$managerName.name",
+          userName: {
+            $first: "$userName.name",
           },
           projectName: {
             $map: {

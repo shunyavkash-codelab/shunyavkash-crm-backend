@@ -11,7 +11,7 @@ var Model = Bank;
 // create new bank
 exports.add = asyncHandler(async (req, res, next) => {
   try {
-    const already = await Model.find({ managerId: req.user.id }).select(
+    const already = await Model.find({ userId: req.user.id }).select(
       "accountNumber defaultBank"
     );
     for (let i = 0; i < already.length; i++) {
@@ -31,7 +31,7 @@ exports.add = asyncHandler(async (req, res, next) => {
 
     req.body.label = "******" + req.body.accountNumber.substring(6);
     req.body.accountNumber = encrypt(req.body.accountNumber);
-    req.body.managerId = req.user.id;
+    req.body.userId = req.user.id;
     req.body.defaultBank = already.length == 0 ? true : req.body.defaultBank;
 
     const bank = await Model.create(req.body);
@@ -86,7 +86,7 @@ exports.getBanks = asyncHandler(async (req, res, next) => {
     const aggregate = [
       {
         $match: {
-          managerId: new mongoose.Types.ObjectId(req.user._id),
+          userId: new mongoose.Types.ObjectId(req.user._id),
         },
       },
     ];
@@ -95,7 +95,7 @@ exports.getBanks = asyncHandler(async (req, res, next) => {
       res,
       200,
       true,
-      "Get managers successfully.",
+      "Get users successfully.",
       result
     );
   } catch (error) {
@@ -137,7 +137,7 @@ exports.editDefaultBank = asyncHandler(async (req, res, next) => {
   try {
     let id = req.params.id;
     const defaultBank = await Model.findOne({
-      managerId: req.user._id,
+      userId: req.user._id,
       defaultBank: true,
     });
     const bank = await Model.findById(id);

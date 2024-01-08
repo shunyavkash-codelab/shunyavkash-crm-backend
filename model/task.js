@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema(
   {
-    managerId: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Manager",
+      ref: "User",
       required: true,
     },
     projectId: {
@@ -38,6 +38,10 @@ const taskSchema = new mongoose.Schema(
     },
     taskPriority: {
       type: String, // Urgent, High, Normal, Low
+      required: true,
+    },
+    perHourCharge: {
+      type: Number,
       required: true,
     },
   },
