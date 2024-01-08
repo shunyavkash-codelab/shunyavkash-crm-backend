@@ -56,9 +56,6 @@ const userSchema = new mongoose.Schema(
       type: Number,
       trim: true,
     },
-    gender: {
-      type: String,
-    },
     profile_img: {
       type: String,
       default: null,
@@ -69,13 +66,6 @@ const userSchema = new mongoose.Schema(
     },
     signature: {
       type: String,
-    },
-    role: {
-      type: Number,
-      enum: [0, 1, 2], // 0 - admin, 1 - user, 2 - employee
-    },
-    jobRole: {
-      type: String, // frontend, backend, organization
     },
     resetPasswordToken: {
       type: String,
@@ -93,10 +83,68 @@ const userSchema = new mongoose.Schema(
       enum: [0, 1], // 0 - not deleted, 1 - deleted
       default: 0,
     },
-    status: {
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    dateOfJoining: {
+      type: Date,
+    },
+    employeeId: {
+      type: String,
+    },
+    jobRole: {
+      type: String, // frontend, backend, organization
+    },
+    role: {
       type: Number,
-      enum: [0, 1], // 0 - active, 1 - deactive
-      default: 0,
+      enum: [0, 1, 2], // 0 - admin, 1 - manager, 2 - employee
+    },
+    gender: {
+      type: String,
+    },
+    dob: {
+      type: Date,
+    },
+    hobbies: {
+      type: String,
+    },
+    phobia: {
+      type: String,
+    },
+    personalEmail: {
+      type: String,
+      lowercase: true,
+    },
+    whatsappNumber: {
+      type: String,
+    },
+    fatherName: {
+      type: String,
+    },
+    fatherNumber: {
+      type: String,
+    },
+    motherName: {
+      type: String,
+    },
+    employeeSignature: {
+      type: String,
+    },
+    hsc_sscCertification: {
+      type: String,
+    },
+    adharCard: {
+      type: String,
+    },
+    addressProof: {
+      type: String,
+    },
+    propertyTax: {
+      type: String,
+    },
+    electricityBill: {
+      type: String,
     },
   },
 
