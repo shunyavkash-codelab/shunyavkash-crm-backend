@@ -13,6 +13,7 @@ const Comman = require("./middleware/comman");
 const Currency = require("./model/currency");
 var adminRouter = require("./routes/admin");
 var taskRouter = require("./routes/task");
+var leaveRouter = require("./routes/leave");
 var { fileUploading } = require("./middleware/fileUploading");
 const { Result } = require("express-validator");
 // Allows cross-origin requests
@@ -48,6 +49,7 @@ router.use("/dashboard", dashboardRouter);
 router.use("/admin", adminRouter);
 router.use("/invoice", invoiceRouter);
 router.use("/task", taskRouter);
+router.use("/user/leave", leaveRouter);
 
 router.get("/country-code", async (req, res) => {
   let countryList = await Country.find();

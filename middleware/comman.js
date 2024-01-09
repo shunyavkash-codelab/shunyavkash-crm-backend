@@ -21,7 +21,7 @@ Comman.errorHandal = (req, res, next) => {
   // validate the request body
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return Comman.setResponse(res, 400, false, "email address not valid.", {
+    return Comman.setResponse(res, 400, false, "Required params not found.", {
       errors: errors.array(),
     });
   }

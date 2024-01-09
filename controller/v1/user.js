@@ -22,6 +22,9 @@ const fieldNames = [
   "landmark",
   "pincode",
   "role",
+  "designation",
+  "employeeId",
+  "isActive",
 ];
 
 // add user by admin
@@ -134,6 +137,7 @@ exports.addEmployee = asyncHandler(async (req, res, next) => {
 
 //login
 exports.login = asyncHandler(async (req, res, next) => {
+  console.log("innnn");
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return Comman.setResponse(res, 400, false, "Required params not found.", {
