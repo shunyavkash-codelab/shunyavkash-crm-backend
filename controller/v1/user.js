@@ -24,6 +24,7 @@ const fieldNames = [
   "role",
   "designation",
   "employeeId",
+  "isActive",
 ];
 
 // add user by admin
