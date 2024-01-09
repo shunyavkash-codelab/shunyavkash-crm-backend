@@ -30,10 +30,6 @@ exports.add = asyncHandler(async (req, res, next) => {
     });
   }
   try {
-    const checkPrefix = await Model.findOne({ prefix: req.body.prefix });
-    if (checkPrefix) {
-      return Comman.setResponse(res, 409, false, "This prefix already exists.");
-    }
     req.body.userId = req.user.id;
     const project = await Model.create(req.body);
     return Comman.setResponse(

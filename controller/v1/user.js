@@ -25,6 +25,22 @@ const fieldNames = [
   "designation",
   "employeeId",
   "isActive",
+  "gender",
+  "dob",
+  "hobbies",
+  "phobia",
+  "whatsappNumber",
+  "personalEmail",
+  "fatherName",
+  "fatherNumber",
+  "motherName",
+  "employeeSignature",
+  "hsc_sscCertification",
+  "adharCard",
+  "addressProof",
+  "propertyTax",
+  "electricityBill",
+  "dateOfJoining",
 ];
 
 // add user by admin
