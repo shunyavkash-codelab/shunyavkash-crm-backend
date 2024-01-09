@@ -61,8 +61,7 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
     reference: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Client",
+      type: String,
     },
     signature: {
       type: String,

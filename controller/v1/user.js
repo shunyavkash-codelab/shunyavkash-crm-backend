@@ -52,8 +52,7 @@ exports.addEmployee = asyncHandler(async (req, res, next) => {
     });
   }
   try {
-    const { name, email, password, role } = req.body;
-    const checkEmail = await Comman.uniqueEmail(Model, email);
+    const checkEmail = await Comman.uniqueEmail(Model, req.body.email);
     if (!checkEmail) {
       return Comman.setResponse(
         res,
@@ -62,13 +61,21 @@ exports.addEmployee = asyncHandler(async (req, res, next) => {
         "This email address already exists."
       );
     }
-    const registration = await Model.create({
-      name: name,
-      email: email,
-      password: await bcrypt.hash(password || null, 10),
-      role:
-        role == "superAdmin" ? 0 : role == "user" ? 1 : role == "employee" && 2,
+    let password = req.body.password;
+    fieldNames.forEach((field) => {
+      if (req.body[field] != null) req.body[field];
     });
+    req.body.role =
+      req.body.role == "superAdmin"
+        ? 0
+        : req.body.role == "user"
+        ? 1
+        : req.body.role == "employee" && 2;
+    req.body.password = await bcrypt.hash(req.body.password || null, 10);
+    if (req.files?.profile_img) {
+      req.body.profile_img = await fileUploading(req.files.profile_img);
+    }
+    const registration = await Model.create(req.body);
     const admin = await Model.findOne({ role: 0 });
     const subject = "Welcome to CRM - Your Login Credentials";
     const message = `<body
@@ -87,14 +94,14 @@ exports.addEmployee = asyncHandler(async (req, res, next) => {
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);"
         >
           <h1 style="color: #333;">Welcome to CRM!</h1>
-          <p style="color:#666;">Dear ${name}</p>
+          <p style="color:#666;">Dear ${req.body.name}</p>
           <p style="color: #666;">
             We are excited to have you on board. Below are your login credentials:
           </p>
 
           <ul>
             <li>
-              <strong>Email:</strong> ${email}
+              <strong>Email:</strong> ${req.body.email}
             </li>
             <li>
               <strong>Password:</strong> ${password}
@@ -132,12 +139,12 @@ exports.addEmployee = asyncHandler(async (req, res, next) => {
         </div>
       </body>`;
 
-    await sendMail(email, subject, message);
+    await sendMail(req.body.email, subject, message);
     return Comman.setResponse(
       res,
       201,
       true,
-      `${role} added successfully.`,
+      `${req.body.role} added successfully.`,
       registration
     );
   } catch (error) {
@@ -317,31 +324,31 @@ exports.getUserById = asyncHandler(async (req, res, next) => {
         _id: new mongoose.Types.ObjectId(req.params.id),
       },
     },
-    {
-      $lookup: {
-        from: "users",
-        localField: "reference",
-        foreignField: "_id",
-        pipeline: [
-          {
-            $project: {
-              name: 1,
-            },
-          },
-        ],
-        as: "user",
-      },
-    },
-    {
-      $addFields: {
-        referenceName: {
-          $first: "$user.name",
-        },
-      },
-    },
-    {
-      $unset: "user",
-    },
+    // {
+    //   $lookup: {
+    //     from: "users",
+    //     localField: "reference",
+    //     foreignField: "_id",
+    //     pipeline: [
+    //       {
+    //         $project: {
+    //           name: 1,
+    //         },
+    //       },
+    //     ],
+    //     as: "user",
+    //   },
+    // },
+    // {
+    //   $addFields: {
+    //     referenceName: {
+    //       $first: "$user.name",
+    //     },
+    //   },
+    // },
+    // {
+    //   $unset: "user",
+    // },
   ]);
   try {
     return Comman.setResponse(
@@ -447,6 +454,34 @@ exports.getAllEmployees = asyncHandler(async (req, res, next) => {
     }
     const aggregate = [{ $match: search }];
     const result = await Pagination(req, res, Model, aggregate);
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Get employee successfully.",
+      result
+    );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// get all User
+exports.getAllUser = asyncHandler(async (req, res, next) => {
+  try {
+    let search = {};
+    if (req.query.search) {
+      search.name = { $regex: req.query.search, $options: "i" };
+    }
+    // const aggregate = [{ $match: search }, { $project: { name: 1 } }];
+    // const result = await Pagination(req, res, Model, aggregate);
+    let result = await Model.find(search).select("name");
     return Comman.setResponse(
       res,
       200,
