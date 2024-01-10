@@ -57,6 +57,21 @@ const clientSchema = new mongoose.Schema(
       type: Number,
       default: 0, // 0 - active , 1 - deactive
     },
+    bankName: {
+      type: String,
+    },
+    IFSC: {
+      type: String,
+    },
+    holderName: {
+      type: String,
+    },
+    accountNumber: {
+      type: String,
+    },
+    label: {
+      type: String,
+    },
   },
 
   { timestamps: true, versionKey: false }
