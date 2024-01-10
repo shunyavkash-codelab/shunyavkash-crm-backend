@@ -78,9 +78,8 @@ const userSchema = new mongoose.Schema(
       default: 0,
     },
     isDeleted: {
-      type: Number,
-      enum: [0, 1], // 0 - not deleted, 1 - deleted
-      default: 0,
+      type: Boolean,
+      default: false,
     },
     isActive: {
       type: Boolean,

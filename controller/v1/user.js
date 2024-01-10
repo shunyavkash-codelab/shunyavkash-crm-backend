@@ -24,6 +24,7 @@ const fieldNames = [
   "role",
   "designation",
   "employeeId",
+  "isDeleted",
   "isActive",
   "gender",
   "dob",
@@ -160,7 +161,6 @@ exports.addEmployee = asyncHandler(async (req, res, next) => {
 
 //login
 exports.login = asyncHandler(async (req, res, next) => {
-  console.log("innnn");
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return Comman.setResponse(res, 400, false, "Required params not found.", {
@@ -170,8 +170,16 @@ exports.login = asyncHandler(async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const check = await Model.findOne({ email: email }).select("+password");
-    if (!check) {
+    if (!check || check.isDeleted) {
       return Comman.setResponse(res, 404, false, "user does not exist");
+    }
+    if (check.isActive == false) {
+      return Comman.setResponse(
+        res,
+        401,
+        false,
+        "Your account is deactivated. Please contact the admin for assistance."
+      );
     }
     if (!(await bcrypt.compare(password, check.password)))
       return Comman.setResponse(
@@ -448,7 +456,7 @@ exports.getEmployees = asyncHandler(async (req, res, next) => {
 // get all user/employee
 exports.getAllEmployees = asyncHandler(async (req, res, next) => {
   try {
-    let search = { $or: [{ role: 1 }, { role: 2 }] };
+    let search = { $or: [{ role: 1 }, { role: 2 }], isDeleted: false };
     if (req.query.search) {
       search.name = { $regex: req.query.search, $options: "i" };
     }
