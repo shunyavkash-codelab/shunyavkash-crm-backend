@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 
 const invoiceSchema = new mongoose.Schema(
   {
-    projectId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Project",
-    },
+    // projectId: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Project",
+    // },
     clientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Client",
@@ -14,10 +14,10 @@ const invoiceSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    taskIds: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "Task",
-    },
+    // taskIds: {
+    //   type: [mongoose.Schema.Types.ObjectId],
+    //   ref: "Task",
+    // },
     bankId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Bank",
@@ -39,9 +39,9 @@ const invoiceSchema = new mongoose.Schema(
     to: {
       type: Object,
     },
-    project: {
-      type: Object,
-    },
+    // project: {
+    //   type: Object,
+    // },
     tasks: {
       type: [Object],
     },
