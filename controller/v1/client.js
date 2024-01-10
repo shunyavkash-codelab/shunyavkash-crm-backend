@@ -3,6 +3,7 @@ const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
 const Client = require("../../model/client");
+const { encrypt, decrypt } = require("../../utils/encryption");
 const { validationResult } = require("express-validator");
 const { fileUploading } = require("../../middleware/fileUploading");
 var Model = Client;
