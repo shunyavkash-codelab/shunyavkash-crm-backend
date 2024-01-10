@@ -249,6 +249,14 @@ exports.editClient = asyncHandler(async (req, res, next) => {
     fieldNames.forEach((field) => {
       if (req.body[field] != null) res.record[field] = req.body[field];
     });
+    if (req.files) {
+      const entries = Object.entries(req.files);
+
+      for (const [key, value] of entries) {
+        let url = await fileUploading(value);
+        res.record[key] = url;
+      }
+    }
     await Model.updateOne({ _id: req.params.id }, res.record, { new: true });
     return Comman.setResponse(res, 200, true, "Update client successfully.");
   } catch (error) {

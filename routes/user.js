@@ -12,6 +12,7 @@ const {
   changePassword,
   getAllEmployees,
   deleteEmployee,
+  getAllUser,
 } = require("../controller/v1/user");
 const Schema = require("../validationSchema/userSchema");
 const errorHandal = require("../middleware/comman").errorHandal;
@@ -54,6 +55,9 @@ router.get("/get-employee", authenticateToken, getEmployees);
 
 // get All Employees
 router.get("/get-all-employees", authenticateToken, auth(0), getAllEmployees);
+
+// get All Employees
+router.get("/get-all-user", authenticateToken, getAllUser);
 
 // single get user
 router.get(
