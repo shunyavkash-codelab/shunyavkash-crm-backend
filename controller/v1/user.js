@@ -36,7 +36,7 @@ const fieldNames = [
   "fatherNumber",
   "motherName",
   "employeeSignature",
-  "hsc_sscCertification",
+  "degreeCertification",
   "adharCard",
   "addressProof",
   "propertyTax",
@@ -456,7 +456,7 @@ exports.getEmployees = asyncHandler(async (req, res, next) => {
 // get all user/employee
 exports.getAllEmployees = asyncHandler(async (req, res, next) => {
   try {
-    let search = { $or: [{ role: 1 }, { role: 2 }], isDeleted: false };
+    let search = { role: 2, isDeleted: false };
     if (req.query.search) {
       search.name = { $regex: req.query.search, $options: "i" };
     }
