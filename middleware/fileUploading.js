@@ -30,6 +30,7 @@ exports.fileUploading = async (file) => {
       }
     });
   } catch (error) {
-    return console.log(error);
+    console.log(error);
+    throw error;
   }
 };
