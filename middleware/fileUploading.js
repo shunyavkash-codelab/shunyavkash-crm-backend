@@ -1,6 +1,6 @@
 const cloudinary = require("cloudinary");
 const fs = require("fs").promises;
-
+const path = require("path");
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -10,13 +10,15 @@ cloudinary.config({
 exports.fileUploading = async (file) => {
   console.log(file, "==========");
   try {
-    let filename =
+    let filename = path.join(
+      __dirname,
       "./temp/" +
-      Date.now() +
-      "_" +
-      Math.ceil(Math.random() * 1e8) +
-      "." +
-      file.mimetype.split("/")[1];
+        Date.now() +
+        "_" +
+        Math.ceil(Math.random() * 1e8) +
+        "." +
+        file.mimetype.split("/")[1]
+    );
     await fs.writeFile(filename, file.data);
     return new Promise(async (resolve, reject) => {
       const data = await cloudinary.uploader.upload(filename);
