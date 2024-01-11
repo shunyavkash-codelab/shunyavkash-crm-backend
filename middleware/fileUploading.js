@@ -12,7 +12,7 @@ exports.fileUploading = async (file) => {
   try {
     let filename = path.join(
       __dirname,
-      "./temp/" +
+      "../temp/" +
         Date.now() +
         "_" +
         Math.ceil(Math.random() * 1e8) +
