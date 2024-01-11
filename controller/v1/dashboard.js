@@ -8,12 +8,15 @@ const Project = require("../../model/project");
 // get dashbord data like (total user, total clients, total project, total invoice)
 exports.dashboard = asyncHandler(async (req, res, next) => {
   try {
-    let totalUser = await User.find({ role: { $ne: 0 } }).count();
+    let totalEmployee = await User.find({
+      role: { $ne: 0 },
+      isDeleted: false,
+    }).count();
     let totalProject = await Project.find().count();
     let totalClient = await Client.find().count();
     let totalInvoice = await Invoice.find().count();
     let dashboard = {
-      totalUser: totalUser,
+      totalEmployee: totalEmployee,
       totalProject: totalProject,
       totalClient: totalClient,
       totalInvoice: totalInvoice,
