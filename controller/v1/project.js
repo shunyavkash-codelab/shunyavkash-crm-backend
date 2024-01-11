@@ -12,7 +12,6 @@ const fieldNames = [
   "name",
   "payPeriod",
   "perHourCharge",
-  "prefix",
   "startDate",
   "endDate",
   "status",
@@ -59,13 +58,6 @@ exports.edit = asyncHandler(async (req, res, next) => {
     });
   }
   try {
-    const checkPrefix = await Model.findOne({
-      _id: { $ne: req.params.id },
-      prefix: req.body?.prefix,
-    });
-    if (checkPrefix) {
-      return Comman.setResponse(res, 409, false, "This prefix already exists.");
-    }
     fieldNames.forEach((field) => {
       if (req.body[field] != null) res.record[field] = req.body[field];
     });
