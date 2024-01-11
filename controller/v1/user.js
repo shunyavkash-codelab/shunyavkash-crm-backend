@@ -36,7 +36,7 @@ const fieldNames = [
   "fatherNumber",
   "motherName",
   "employeeSignature",
-  "hsc_sscCertification",
+  "degreeCertification",
   "adharCard",
   "addressProof",
   "propertyTax",

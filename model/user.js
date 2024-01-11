@@ -129,7 +129,7 @@ const userSchema = new mongoose.Schema(
     employeeSignature: {
       type: String,
     },
-    hsc_sscCertification: {
+    degreeCertification: {
       type: String,
     },
     adharCard: {
