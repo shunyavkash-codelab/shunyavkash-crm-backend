@@ -126,7 +126,7 @@ const userSchema = new mongoose.Schema(
     motherName: {
       type: String,
     },
-    employeeSignature: {
+    signature: {
       type: String,
     },
     degreeCertification: {
