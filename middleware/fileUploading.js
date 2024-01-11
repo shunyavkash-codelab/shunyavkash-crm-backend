@@ -8,6 +8,7 @@ cloudinary.config({
 });
 
 exports.fileUploading = async (file) => {
+  console.log(file, "==========");
   try {
     let filename =
       "./temp/" +

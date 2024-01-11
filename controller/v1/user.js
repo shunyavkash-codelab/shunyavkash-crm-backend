@@ -35,13 +35,22 @@ const fieldNames = [
   "fatherName",
   "fatherNumber",
   "motherName",
-  "employeeSignature",
+  "signature",
   "degreeCertification",
   "adharCard",
   "addressProof",
   "propertyTax",
   "electricityBill",
   "dateOfJoining",
+];
+
+const formFile = [
+  "signature",
+  "degreeCertification",
+  "adharCard",
+  "addressProof",
+  "propertyTax",
+  "electricityBill",
 ];
 
 // add user by admin
@@ -412,6 +421,10 @@ exports.editUser = asyncHandler(async (req, res, next) => {
     });
     if (req.files?.profile_img) {
       res.record.profile_img = await fileUploading(req.files.profile_img);
+    }
+    for (const file of formFile) {
+      if (req.files[file] !== undefined)
+        res.record[file] = await fileUploading(req.files[file]);
     }
     await Model.updateOne({ _id: req.params.id }, res.record, { new: true });
     return Comman.setResponse(res, 200, true, "Update user successfully.");
