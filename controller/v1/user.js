@@ -69,7 +69,7 @@ exports.addEmployee = asyncHandler(async (req, res, next) => {
     req.body.role =
       req.body.role == "superAdmin"
         ? 0
-        : req.body.role == "user"
+        : req.body.role == "manager"
         ? 1
         : req.body.role == "employee" && 2;
     req.body.password = await bcrypt.hash(req.body.password || null, 10);

@@ -53,8 +53,10 @@ exports.add = asyncHandler(async (req, res, next) => {
     fieldNames.forEach((field) => {
       if (req.body[field] != null) obj[field] = req.body[field];
     });
-    obj["label"] = "******" + req.body.accountNumber.substring(6);
-    obj["accountNumber"] = encrypt(req.body.accountNumber);
+    if (req.body.accountNumber) {
+      obj["label"] = "******" + req.body.accountNumber.substring(6);
+      obj["accountNumber"] = encrypt(req.body.accountNumber);
+    }
     obj.userId = req.user._id;
     if (req.files) {
       const entries = Object.entries(req.files);
@@ -255,8 +257,10 @@ exports.editClient = asyncHandler(async (req, res, next) => {
     fieldNames.forEach((field) => {
       if (req.body[field] != null) res.record[field] = req.body[field];
     });
-    res.record["label"] = "******" + req.body.accountNumber.substring(6);
-    res.record["accountNumber"] = encrypt(req.body.accountNumber);
+    if (req.body.accountNumber) {
+      res.record["label"] = "******" + req.body.accountNumber.substring(6);
+      res.record["accountNumber"] = encrypt(req.body.accountNumber);
+    }
     if (req.files) {
       const entries = Object.entries(req.files);
 
