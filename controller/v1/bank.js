@@ -168,3 +168,27 @@ exports.editDefaultBank = asyncHandler(async (req, res, next) => {
     );
   }
 });
+
+// get single bank by userId
+exports.getBankByUserId = asyncHandler(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return Comman.setResponse(res, 400, false, "Required params not found.", {
+      errors: errors.array(),
+    });
+  }
+  try {
+    let userId = req.params.id;
+    const bank = await Model.findOne({ userId: userId, defaultBank: true });
+
+    return Comman.setResponse(res, 200, true, "Get bank successfully.", bank);
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});

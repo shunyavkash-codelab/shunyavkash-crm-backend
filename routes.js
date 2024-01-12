@@ -14,8 +14,10 @@ const Currency = require("./model/currency");
 var adminRouter = require("./routes/admin");
 var taskRouter = require("./routes/task");
 var leaveRouter = require("./routes/leave");
+var salaryRouter = require("./routes/salary");
 var { fileUploading } = require("./middleware/fileUploading");
 const { Result } = require("express-validator");
+
 // Allows cross-origin requests
 var allowedOrigins = [
   "http://localhost:3000",
@@ -50,6 +52,7 @@ router.use("/admin", adminRouter);
 router.use("/invoice", invoiceRouter);
 router.use("/task", taskRouter);
 router.use("/user/leave", leaveRouter);
+router.use("/salary", salaryRouter);
 
 router.get("/country-code", async (req, res) => {
   let countryList = await Country.find();
