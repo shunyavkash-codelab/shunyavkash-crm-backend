@@ -6,6 +6,7 @@ const {
   checkInvoiceNum,
   invoiceList,
   getInvoiceById,
+  editInvoice,
 } = require("../controller/v1/invoice");
 const errorHandal = require("../middleware/comman").errorHandal;
 const { getRecord } = require("../middleware/getRecord");
@@ -24,6 +25,9 @@ router.get(
 
 // add invoice
 router.post("/add", Schema.addSchema, authenticateToken, auth(0), addInvoice);
+
+// add invoice
+router.post("/edit", Schema.addSchema, authenticateToken, auth(0), editInvoice);
 
 // check invoice number exist or not
 router.get(

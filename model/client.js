@@ -69,9 +69,6 @@ const clientSchema = new mongoose.Schema(
     accountNumber: {
       type: String,
     },
-    label: {
-      type: String,
-    },
   },
 
   { timestamps: true, versionKey: false }

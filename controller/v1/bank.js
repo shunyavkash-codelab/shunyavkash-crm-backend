@@ -3,7 +3,6 @@ const Comman = require("../../middleware/comman");
 const bcrypt = require("bcrypt");
 const Pagination = require("../../middleware/pagination");
 const Bank = require("../../model/bank");
-const { encrypt, decrypt } = require("../../utils/encryption");
 const { default: mongoose } = require("mongoose");
 const { validationResult } = require("express-validator");
 var Model = Bank;
@@ -15,7 +14,7 @@ exports.add = asyncHandler(async (req, res, next) => {
       "accountNumber defaultBank"
     );
     for (let i = 0; i < already.length; i++) {
-      if (decrypt(already[i].accountNumber) == req.body.accountNumber) {
+      if (already[i].accountNumber == req.body.accountNumber) {
         return Comman.setResponse(
           res,
           400,
@@ -29,8 +28,6 @@ exports.add = asyncHandler(async (req, res, next) => {
       }
     }
 
-    req.body.label = "******" + req.body.accountNumber.substring(6);
-    req.body.accountNumber = encrypt(req.body.accountNumber);
     req.body.userId = req.user.id;
     req.body.defaultBank = already.length == 0 ? true : req.body.defaultBank;
 

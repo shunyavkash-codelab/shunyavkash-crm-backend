@@ -33,11 +33,12 @@ exports.addInvoice = asyncHandler(async (req, res, next) => {
     let invoiceNo = req.body.invoiceNumber;
     const checkInvoiceNo = await Model.findOne({ invoiceNumber: invoiceNo });
     if (checkInvoiceNo) {
-      //update
-      await Model.findOneAndUpdate({ invoiceNumber: invoiceNo }, req.body, {
-        new: true,
-      });
-      return Comman.setResponse(res, 200, true, "Update invoice successfully");
+      return Comman.setResponse(
+        res,
+        200,
+        false,
+        "Invoice number already exist."
+      );
     }
 
     // create
@@ -52,6 +53,37 @@ exports.addInvoice = asyncHandler(async (req, res, next) => {
       Comman.incrementInvoiceNumber();
     }
     return Comman.setResponse(res, 201, true, "Create invoice successfully");
+  } catch (error) {
+    console.log(error.code, "-----------------37");
+    if (error.code == 11000)
+      return Comman.setResponse(
+        res,
+        409,
+        false,
+        "This invoice already generated."
+      );
+    Comman.setResponse(res, 400, false, "Something went wrong, please retry");
+  }
+});
+
+// edit invoice
+exports.editInvoice = asyncHandler(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return Comman.setResponse(res, 400, false, "Required params not found.", {
+      errors: errors.array(),
+    });
+  }
+  try {
+    let invoiceNo = req.body.invoiceNumber;
+    const checkInvoiceNo = await Model.findOne({ invoiceNumber: invoiceNo });
+    if (checkInvoiceNo) {
+      //update
+      await Model.findOneAndUpdate({ invoiceNumber: invoiceNo }, req.body, {
+        new: true,
+      });
+      return Comman.setResponse(res, 200, true, "Update invoice successfully");
+    }
   } catch (error) {
     console.log(error.code, "-----------------37");
     if (error.code == 11000)
