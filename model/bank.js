@@ -23,10 +23,6 @@ const bankSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    label: {
-      type: String,
-      required: true,
-    },
     defaultBank: {
       type: Boolean,
     },

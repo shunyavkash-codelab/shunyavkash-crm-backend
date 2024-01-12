@@ -3,7 +3,6 @@ const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
 const Client = require("../../model/client");
-const { encrypt, decrypt } = require("../../utils/encryption");
 const { validationResult } = require("express-validator");
 const { fileUploading } = require("../../middleware/fileUploading");
 var Model = Client;
@@ -20,6 +19,7 @@ const fieldNames = [
   "bankName",
   "IFSC",
   "holderName",
+  "accountNumber",
 ];
 
 // create client
@@ -53,10 +53,6 @@ exports.add = asyncHandler(async (req, res, next) => {
     fieldNames.forEach((field) => {
       if (req.body[field] != null) obj[field] = req.body[field];
     });
-    if (req.body.accountNumber) {
-      obj["label"] = "******" + req.body.accountNumber.substring(6);
-      obj["accountNumber"] = encrypt(req.body.accountNumber);
-    }
     obj.userId = req.user._id;
     if (req.files) {
       const entries = Object.entries(req.files);
@@ -257,10 +253,6 @@ exports.editClient = asyncHandler(async (req, res, next) => {
     fieldNames.forEach((field) => {
       if (req.body[field] != null) res.record[field] = req.body[field];
     });
-    if (req.body.accountNumber) {
-      res.record["label"] = "******" + req.body.accountNumber.substring(6);
-      res.record["accountNumber"] = encrypt(req.body.accountNumber);
-    }
     if (req.files) {
       const entries = Object.entries(req.files);
 
