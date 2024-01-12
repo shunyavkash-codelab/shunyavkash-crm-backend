@@ -6,6 +6,7 @@ const {
   getBankById,
   removeBankById,
   editDefaultBank,
+  getBankByUserId,
 } = require("../controller/v1/bank");
 const Schema = require("../validationSchema/bankSchema");
 const errorHandal = require("../middleware/comman").errorHandal;
@@ -19,6 +20,9 @@ router.post("/add", Schema.addSchema, authenticateToken, auth(0, 1), add);
 
 // multiple get bank
 router.get("/get-banks", authenticateToken, auth(0, 1, 2), getBanks);
+
+// get bank by userId
+router.get("/user/:id", authenticateToken, auth(0, 1, 2), getBankByUserId);
 
 // single get bank
 router.get(
