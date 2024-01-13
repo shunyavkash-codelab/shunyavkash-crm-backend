@@ -7,6 +7,15 @@ const { default: mongoose } = require("mongoose");
 const { validationResult } = require("express-validator");
 var Model = Bank;
 
+// use edit client field
+const fieldNames = [
+  "holderName",
+  "bankName",
+  "IFSC",
+  "accountNumber",
+  "defaultBank",
+];
+
 // create new bank
 exports.add = asyncHandler(async (req, res, next) => {
   try {
@@ -144,20 +153,23 @@ exports.editDefaultBank = asyncHandler(async (req, res, next) => {
         defaultBank.defaultBank = false;
         await defaultBank.save();
       }
-      await Model.findByIdAndUpdate(
-        id,
-        { $set: { defaultBank: true } },
-        { new: true }
-      );
-      return Comman.setResponse(res, 200, true, "Set default bank.");
-    } else {
-      return Comman.setResponse(
-        res,
-        400,
-        false,
-        "Please set other bank default."
-      );
     }
+    let obj = {};
+    fieldNames.forEach((field) => {
+      if (req.body[field] != null) obj[field] = req.body[field];
+    });
+    let bankDatail = await Model.findByIdAndUpdate(
+      id,
+      { $set: obj },
+      { new: true }
+    );
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Bank update successfully.",
+      bankDatail
+    );
   } catch (error) {
     console.log(error);
     return Comman.setResponse(

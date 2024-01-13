@@ -22,12 +22,6 @@ const fieldNames = [
 
 // create new project
 exports.add = asyncHandler(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return Comman.setResponse(res, 400, false, "Required params not found.", {
-      errors: errors.array(),
-    });
-  }
   try {
     req.body.userId = req.user.id;
     const project = await Model.create(req.body);
@@ -76,12 +70,6 @@ exports.edit = asyncHandler(async (req, res, next) => {
 
 // get single project
 exports.getProjectById = asyncHandler(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return Comman.setResponse(res, 400, false, "Required params not found.", {
-      errors: errors.array(),
-    });
-  }
   try {
     let project = await Model.aggregate([
       {

@@ -10,12 +10,6 @@ const fieldNames = ["taskName", "hours", "taskPriority", "perHourCharge"];
 
 // create task
 exports.add = asyncHandler(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return Comman.setResponse(res, 400, false, "Required params not found.", {
-      errors: errors.array(),
-    });
-  }
   try {
     let userId = req.user.id;
 
@@ -102,12 +96,6 @@ exports.gettaskByProject = asyncHandler(async (req, res, next) => {
 
 // edit task
 exports.edit = asyncHandler(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return Comman.setResponse(res, 400, false, "Required params not found.", {
-      errors: errors.array(),
-    });
-  }
   try {
     let taskId = req.params.id;
     await Model.findByIdAndUpdate(

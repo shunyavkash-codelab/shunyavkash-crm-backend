@@ -97,3 +97,16 @@ exports.all = asyncHandler(async (req, res) => {
     );
   }
 });
+
+// get userId wise leave
+exports.getLeaveByUserId = asyncHandler(async (req, res) => {
+  let userId = req.params.id;
+  const leave = await Model.find({ userId: userId });
+  return Comman.setResponse(
+    res,
+    200,
+    true,
+    "Get leave application successfully.",
+    leave
+  );
+});

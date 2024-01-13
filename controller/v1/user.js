@@ -55,12 +55,6 @@ const formFile = [
 
 // add user by admin
 exports.addEmployee = asyncHandler(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return Comman.setResponse(res, 400, false, "Required params not found.", {
-      errors: errors.array(),
-    });
-  }
   try {
     const checkEmail = await Comman.uniqueEmail(Model, req.body.email);
     if (!checkEmail) {
@@ -170,12 +164,6 @@ exports.addEmployee = asyncHandler(async (req, res, next) => {
 
 //login
 exports.login = asyncHandler(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return Comman.setResponse(res, 400, false, "Required params not found.", {
-      errors: errors.array(),
-    });
-  }
   try {
     const { email, password } = req.body;
     const check = await Model.findOne({ email: email }).select("+password");
@@ -219,12 +207,6 @@ exports.login = asyncHandler(async (req, res, next) => {
 
 //forget password
 exports.forgetPassword = asyncHandler(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return Comman.setResponse(res, 400, false, "Required params not found.", {
-      errors: errors.array(),
-    });
-  }
   let email = req.body.email;
   const user = await Model.findOne({ email: email });
   const accessToken = await user.generateAuthToken();
@@ -254,12 +236,6 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
 
 // reset password (forgot password)
 exports.resetPassword = asyncHandler(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return Comman.setResponse(res, 400, false, "Required params not found.", {
-      errors: errors.array(),
-    });
-  }
   let key = req.query.key;
   jwt.verify(key, process.env.JWT_SECRET_KEY, async (err, user) => {
     if (err) return res.status(401).send({ message: err.message });
@@ -301,12 +277,6 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 
 // change Password (profile)
 exports.changePassword = asyncHandler(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return Comman.setResponse(res, 400, false, "Required params not found.", {
-      errors: errors.array(),
-    });
-  }
   let oldPassword = req.body.oldPassword;
   let password = req.body.password;
   let confirmPassword = req.body.confirmPassword;
@@ -329,12 +299,6 @@ exports.changePassword = asyncHandler(async (req, res, next) => {
 
 // get single user
 exports.getUserById = asyncHandler(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return Comman.setResponse(res, 400, false, "Required params not found.", {
-      errors: errors.array(),
-    });
-  }
   const user = await Model.aggregate([
     {
       $match: {

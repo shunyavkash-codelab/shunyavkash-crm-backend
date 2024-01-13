@@ -23,12 +23,6 @@ exports.generateInvoiceNum = asyncHandler(async (req, res, next) => {
 
 // add invoice
 exports.addInvoice = asyncHandler(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return Comman.setResponse(res, 400, false, "Required params not found.", {
-      errors: errors.array(),
-    });
-  }
   try {
     let invoiceNo = req.body.invoiceNumber;
     const checkInvoiceNo = await Model.findOne({ invoiceNumber: invoiceNo });
@@ -68,12 +62,6 @@ exports.addInvoice = asyncHandler(async (req, res, next) => {
 
 // edit invoice
 exports.editInvoice = asyncHandler(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return Comman.setResponse(res, 400, false, "Required params not found.", {
-      errors: errors.array(),
-    });
-  }
   try {
     let invoiceNo = req.body.invoiceNumber;
     const checkInvoiceNo = await Model.findOne({ invoiceNumber: invoiceNo });
@@ -202,12 +190,6 @@ exports.invoiceList = asyncHandler(async (req, res, next) => {
 
 // get single invoice
 exports.getInvoiceById = asyncHandler(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return Comman.setResponse(res, 400, false, "Required params not found.", {
-      errors: errors.array(),
-    });
-  }
   try {
     let invoice = await Model.aggregate([
       {

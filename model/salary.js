@@ -9,9 +9,10 @@ const salarySchema = new mongoose.Schema(
       require: true,
       ref: "User",
     },
-    name: {
-      type: String,
-      required: true,
+    employee: {
+      type: mongoose.Schema.Types.ObjectId,
+      require: true,
+      ref: "User",
     },
     amount: {
       type: Number,
@@ -24,6 +25,9 @@ const salarySchema = new mongoose.Schema(
     },
     incentive: {
       type: Number,
+    },
+    date: {
+      type: Date,
     },
   },
 

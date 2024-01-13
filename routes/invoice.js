@@ -24,10 +24,24 @@ router.get(
 );
 
 // add invoice
-router.post("/add", Schema.addSchema, authenticateToken, auth(0), addInvoice);
+router.post(
+  "/add",
+  Schema.addSchema,
+  errorHandal,
+  authenticateToken,
+  auth(0),
+  addInvoice
+);
 
 // add invoice
-router.post("/edit", Schema.addSchema, authenticateToken, auth(0), editInvoice);
+router.post(
+  "/edit",
+  Schema.addSchema,
+  errorHandal,
+  authenticateToken,
+  auth(0),
+  editInvoice
+);
 
 // check invoice number exist or not
 router.get(
