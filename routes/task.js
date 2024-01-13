@@ -9,7 +9,14 @@ const { authenticateToken, auth } = require("../middleware/verifyToken");
 var Model = Task;
 
 // create new task
-router.post("/add", Schema.addSchema, authenticateToken, auth(0), add);
+router.post(
+  "/add",
+  Schema.addSchema,
+  errorHandal,
+  authenticateToken,
+  auth(0),
+  add
+);
 
 //edit task
 router.patch("/:id", authenticateToken, auth(0), edit);

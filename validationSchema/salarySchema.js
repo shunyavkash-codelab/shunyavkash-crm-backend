@@ -3,18 +3,14 @@ const { check, param } = require("express-validator");
 const Schema = {};
 
 Schema.addSchema = [
-  check("userId").notEmpty().withMessage("UserId is required fied"),
-  check("name")
-    .notEmpty()
-    .withMessage("Name is a required field")
-    .matches(/^[a-zA-Z]+$/)
-    .withMessage("Name must contain only alphabet characters"),
+  check("employee").notEmpty().withMessage("Employee name is a required field"),
   check("amount")
     .notEmpty()
     .withMessage("Amount is a required field")
     .isNumeric()
     .withMessage("Amount must contain only numeric values"),
-  check("status").notEmpty().withMessage("Status is required fied"),
+  check("status").notEmpty().withMessage("Status is required field"),
+  check("date").notEmpty().withMessage("Date is required field"),
 ];
 
 module.exports = Schema;

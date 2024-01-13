@@ -15,7 +15,14 @@ const { authenticateToken, auth } = require("../middleware/verifyToken");
 var Model = Project;
 
 // create new project
-router.post("/add", Schema.addSchema, authenticateToken, auth(0, 1), add);
+router.post(
+  "/add",
+  Schema.addSchema,
+  errorHandal,
+  authenticateToken,
+  auth(0, 1),
+  add
+);
 
 // edit project
 router.patch("/:id", authenticateToken, auth(0, 1), getRecord(Model), edit);

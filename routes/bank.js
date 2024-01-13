@@ -16,7 +16,14 @@ const { authenticateToken, auth } = require("../middleware/verifyToken");
 var Model = Bank;
 
 // create new bank
-router.post("/add", Schema.addSchema, authenticateToken, auth(0, 1), add);
+router.post(
+  "/add",
+  Schema.addSchema,
+  errorHandal,
+  authenticateToken,
+  auth(0, 1),
+  add
+);
 
 // multiple get bank
 router.get("/get-banks", authenticateToken, auth(0, 1, 2), getBanks);

@@ -31,19 +31,30 @@ router.post(
 );
 
 // login
-router.post("/login", Schema.loginSchema, login);
+router.post("/login", Schema.loginSchema, errorHandal, login);
 
 // forget password
-router.post("/forget-password", Schema.forgetPassword, forgetPassword);
+router.post(
+  "/forget-password",
+  Schema.forgetPassword,
+  errorHandal,
+  forgetPassword
+);
 
 // reset password (forgot password)
-router.post("/reset-password", Schema.resetPassword, resetPassword);
+router.post(
+  "/reset-password",
+  Schema.resetPassword,
+  errorHandal,
+  resetPassword
+);
 
 // change password (profile)
 router.post(
   "/change-password",
-  authenticateToken,
   Schema.resetPassword,
+  errorHandal,
+  authenticateToken,
   changePassword
 );
 

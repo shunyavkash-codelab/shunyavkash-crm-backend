@@ -54,6 +54,5 @@ const projectSchema = new mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
-projectSchema.index({ prefix: 1 }, { unique: true });
 const Project = mongoose.model("Project", projectSchema);
 module.exports = Project;
