@@ -51,7 +51,7 @@ router.use("/dashboard", dashboardRouter);
 router.use("/admin", adminRouter);
 router.use("/invoice", invoiceRouter);
 router.use("/task", taskRouter);
-router.use("/user/leave", leaveRouter);
+router.use("/leave", leaveRouter);
 router.use("/salary", salaryRouter);
 
 router.get("/country-code", async (req, res) => {

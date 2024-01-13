@@ -6,12 +6,17 @@ const {
   edit,
   all,
   getLeaveByUserId,
+  leaveDashboard,
+  approveLeaves,
 } = require("../controller/v1/leave");
 const Schema = require("../validationSchema/leaveSchema");
 const { errorHandal } = require("../middleware/comman");
 const { getRecord } = require("../middleware/getRecord");
 const Leave = require("../model/leave");
 var Model = Leave;
+
+// get all leaves
+router.get("/dashboard", authenticateToken, auth(0), leaveDashboard);
 
 // apply leave
 router.post(
@@ -25,6 +30,9 @@ router.post(
 
 // get all leaves
 router.get("/all", authenticateToken, auth(0), all);
+
+// get all approve leaves
+router.get("/approve", authenticateToken, auth(0, 1, 2), approveLeaves);
 
 // get singal user leave by userId
 router.get(
