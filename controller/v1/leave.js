@@ -8,13 +8,20 @@ const fieldNames = ["status", "description"];
 
 exports.applyLeave = asyncHandler(async (req, res) => {
   try {
+    console.log("object");
     req.body.userId = req.user._id;
     let already = await Model.findOne(req.body);
     if (already) {
       return Comman.setResponse(res, 409, false, "Your leave already applied.");
     }
-    await Model.create(req.body);
-    Comman.setResponse(res, 201, true, "Your leave apply successfully.");
+    const applyLeave = await Model.create(req.body);
+    Comman.setResponse(
+      res,
+      201,
+      true,
+      "Your leave apply successfully.",
+      applyLeave
+    );
   } catch (error) {
     return Comman.setResponse(
       res,

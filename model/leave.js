@@ -8,15 +8,15 @@ const leaveSchema = new mongoose.Schema(
     },
     leaveType: {
       type: String,
-      enum: ["Casual", "Sick", "Paid", "Unpaid"],
+      enum: ["casual", "sick", "paid", "unpaid"],
     },
     startDayType: {
       type: String,
-      enum: ["Full day", "First half", "Second half"],
+      enum: ["full day", "first half", "second half"],
     },
     endDayType: {
       type: String,
-      enum: ["Full day", "First half", "Second half"],
+      enum: ["full day", "first half", "second half"],
     },
     reason: {
       type: String,
@@ -29,7 +29,8 @@ const leaveSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["approve", "unapprove"],
+      enum: ["pending", "approve", "unapprove"],
+      default: "pending",
     },
     description: {
       type: String,
