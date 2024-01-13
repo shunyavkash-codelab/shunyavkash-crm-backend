@@ -10,7 +10,11 @@ const leaveSchema = new mongoose.Schema(
       type: String,
       enum: ["Casual", "Sick", "Paid", "Unpaid"],
     },
-    dayType: {
+    startDayType: {
+      type: String,
+      enum: ["Full day", "First half", "Second half"],
+    },
+    endDayType: {
       type: String,
       enum: ["Full day", "First half", "Second half"],
     },
