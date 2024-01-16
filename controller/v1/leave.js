@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
@@ -180,13 +181,36 @@ exports.getLeaveByUserId = asyncHandler(async (req, res) => {
 
 // get leave dashboard
 exports.leaveDashboard = asyncHandler(async (req, res) => {
+  let obj = {};
+  if (req.query.userId) {
+    obj.userId = new mongoose.Types.ObjectId(req.query.userId);
+  }
   const leaveData = await Model.aggregate([
+    { $match: obj },
     {
       $group: {
-        _id: "$leaveType",
-        count: {
-          $sum: 1,
+        _id: null,
+        sick: {
+          $sum: {
+            $cond: [{ $eq: ["$leaveType", "sick"] }, 1, 0],
+          },
         },
+        casual: {
+          $sum: {
+            $cond: [{ $eq: ["$leaveType", "casual"] }, 1, 0],
+          },
+        },
+        paid: {
+          $sum: {
+            $cond: [{ $eq: ["$leaveType", "paid"] }, 1, 0],
+          },
+        },
+        unpaid: {
+          $sum: {
+            $cond: [{ $eq: ["$leaveType", "unpaid"] }, 1, 0],
+          },
+        },
+        total: { $sum: 1 },
       },
     },
   ]);
@@ -195,6 +219,6 @@ exports.leaveDashboard = asyncHandler(async (req, res) => {
     200,
     true,
     "Get leave data successfully.",
-    leaveData
+    leaveData[0]
   );
 });
