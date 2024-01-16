@@ -19,9 +19,6 @@ Schema.addSchema = [
   check("paymentMethod")
     .notEmpty()
     .withMessage("paymentMethod is a required field"),
-  check("collaboration")
-    .notEmpty()
-    .withMessage("collaboration is a required field"),
 ];
 
 module.exports = Schema;

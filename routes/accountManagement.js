@@ -5,7 +5,7 @@ const errorHandal = require("../middleware/comman").errorHandal;
 const { getRecord } = require("../middleware/getRecord");
 const accountManagement = require("../model/accountManagement");
 const { authenticateToken, auth } = require("../middleware/verifyToken");
-const Schema = require("../validationSchema/accountManagementSchema.JS");
+const Schema = require("../validationSchema/accountManagementSchema");
 
 // create new salary
 router.post(

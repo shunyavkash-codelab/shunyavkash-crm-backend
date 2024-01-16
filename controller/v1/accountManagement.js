@@ -33,13 +33,14 @@ exports.add = asyncHandler(async (req, res, next) => {
 // Get Account management
 exports.getAccountList = asyncHandler(async (req, res, next) => {
   try {
-    const accountManagement = await Model.find();
+    let aggregate = [];
+    const result = await Pagination(req, res, Model, aggregate);
     return Comman.setResponse(
       res,
       200,
       true,
       "Get account management successfully.",
-      accountManagement
+      result
     );
   } catch (error) {
     console.log(error);

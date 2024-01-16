@@ -41,12 +41,11 @@ const accountManagementSchema = new mongoose.Schema(
     },
     collaboration: {
       type: String,
-      required: true,
     },
     invoiceUpload: {
       type: String,
     },
-    expanceType: {
+    expanseType: {
       type: String,
     },
   },
