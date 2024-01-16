@@ -16,7 +16,7 @@ const Leave = require("../model/leave");
 var Model = Leave;
 
 // get all leaves
-router.get("/dashboard", authenticateToken, auth(0), leaveDashboard);
+router.get("/dashboard", authenticateToken, auth(0, 1, 2), leaveDashboard);
 
 // apply leave
 router.post(
