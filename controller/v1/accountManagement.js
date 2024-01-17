@@ -52,3 +52,121 @@ exports.getAccountList = asyncHandler(async (req, res, next) => {
     );
   }
 });
+
+// Account dashboard
+exports.accountDashboard = asyncHandler(async (req, res, next) => {
+  try {
+    const accountDashboard = await Model.aggregate([
+      {
+        $facet: {
+          total_sales: [
+            {
+              $match: {
+                type: "income",
+                collaborator: {
+                  $exists: true,
+                },
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                count: {
+                  $sum: "$amount",
+                },
+              },
+            },
+          ],
+          total_income: [
+            {
+              $match: {
+                type: "income",
+              },
+            },
+            {
+              $group: {
+                _id: "$type",
+                count: {
+                  $sum: "$amount",
+                },
+              },
+            },
+          ],
+          total_expense: [
+            {
+              $match: {
+                type: "expense",
+              },
+            },
+            {
+              $group: {
+                _id: "$type",
+                count: {
+                  $sum: "$amount",
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          totalSales: {
+            $first: "$total_sales.count",
+          },
+          totalIncome: {
+            $first: "$total_income.count",
+          },
+          totalExpense: {
+            $first: "$total_expense.count",
+          },
+        },
+      },
+      {
+        $addFields: {
+          totalBalance: {
+            $subtract: ["$totalIncome", "$totalExpense"],
+          },
+        },
+      },
+    ]);
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Account dashboard",
+      accountDashboard[0]
+    );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// get singal transaction
+exports.viewTransaction = asyncHandler(async (req, res, next) => {
+  try {
+    let transactionId = req.params.id;
+    const viewTransaction = await Model.findOne({ _id: transactionId });
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "View transaction",
+      viewTransaction
+    );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});

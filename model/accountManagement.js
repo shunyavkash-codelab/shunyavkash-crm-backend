@@ -8,7 +8,7 @@ const accountManagementSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["income", "expance"],
+      enum: ["income", "expense"],
       required: true,
     },
     date: {
@@ -39,13 +39,13 @@ const accountManagementSchema = new mongoose.Schema(
       type: String,
       enum: ["card", "bankTransfer", "cash", "upi"],
     },
-    collaboration: {
+    collaborator: {
       type: String,
     },
     invoiceUpload: {
       type: String,
     },
-    expanseType: {
+    expenseType: {
       type: String,
     },
   },
