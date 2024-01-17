@@ -4,6 +4,7 @@ const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
 const accountManagement = require("../../model/accountManagement");
 const { validationResult } = require("express-validator");
+const { fileUploading } = require("../../middleware/fileUploading");
 var Model = accountManagement;
 
 let fieldNames = [
@@ -23,6 +24,12 @@ let fieldNames = [
 exports.add = asyncHandler(async (req, res, next) => {
   try {
     req.body.userId = req.user._id;
+    fieldNames.forEach((field) => {
+      if (req.body[field] != null) req.body[field];
+    });
+    if (req.files?.invoiceUpload) {
+      req.body.invoiceUpload = await fileUploading(req.files.invoiceUpload);
+    }
     const addAccount = await Model.create(req.body);
 
     return Comman.setResponse(
@@ -204,6 +211,9 @@ exports.editTransaction = asyncHandler(async (req, res, next) => {
     fieldNames.forEach((field) => {
       if (req.body[field] != null) res.record[field] = req.body[field];
     });
+    if (req.files?.invoiceUpload) {
+      res.record.invoiceUpload = await fileUploading(req.files.invoiceUpload);
+    }
     await Model.updateOne(
       { _id: transactionId },
       { $set: res.record },
