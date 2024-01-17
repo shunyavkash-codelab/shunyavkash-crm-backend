@@ -54,7 +54,7 @@ router.use("/invoice", invoiceRouter);
 router.use("/task", taskRouter);
 router.use("/leave", leaveRouter);
 router.use("/salary", salaryRouter);
-router.use("/account", accountManagementRouter);
+router.use("/transaction", accountManagementRouter);
 
 router.get("/country-code", async (req, res) => {
   let countryList = await Country.find();

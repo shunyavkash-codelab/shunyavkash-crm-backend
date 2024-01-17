@@ -30,11 +30,11 @@ router.get("/", authenticateToken, auth(0), getAccountList);
 router.get("/dashboard", authenticateToken, auth(0), accountDashboard);
 
 // view transaction
-router.get("/viewTransaction/:id", authenticateToken, auth(0), viewTransaction);
+router.get("/:id", authenticateToken, auth(0), viewTransaction);
 
 // edit transaction
 router.patch(
-  "/editTransaction/:id",
+  "/:id",
   authenticateToken,
   auth(0),
   getRecord(Model),
