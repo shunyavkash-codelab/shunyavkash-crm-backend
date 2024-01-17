@@ -218,7 +218,7 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
   const message =
     `<div style="font-size:16px"><span style="font-size:18px;">Hi ${user.name}!</span><br/> Forgot your password? No worries just click this link to reset it.<br />` +
     `<br />Tired of remembering your password? Let CRM remember it for you! Just let your smartphone autofill and remember your password!<br /><br />` +
-    `<a style="text-decoration: none; background-color:green;padding:8px 16px; color:white" href="http://localhost:3000/confirm-password?key=${accessToken}">Reset Password</a></div>`;
+    `<a style="text-decoration: none; background-color:green;padding:8px 16px; color:white" href="${process.env.DOMAIN}/confirm-password?key=${accessToken}">Reset Password</a></div>`;
   await sendMail(email, subject, message)
     .then(async (re) => {
       user.resetPasswordToken = accessToken;
