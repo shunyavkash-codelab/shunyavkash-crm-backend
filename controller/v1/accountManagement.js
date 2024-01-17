@@ -6,6 +6,19 @@ const accountManagement = require("../../model/accountManagement");
 const { validationResult } = require("express-validator");
 var Model = accountManagement;
 
+let fieldNames = [
+  "date",
+  "title",
+  "description",
+  "amount",
+  "invoiceType",
+  "invoiceOwner",
+  "paymentMethod",
+  "expanseType",
+  "collaborator",
+  "invoiceUpload",
+];
+
 // add account
 exports.add = asyncHandler(async (req, res, next) => {
   try {
@@ -112,16 +125,29 @@ exports.accountDashboard = asyncHandler(async (req, res, next) => {
       {
         $project: {
           totalSales: {
-            $first: "$total_sales.count",
+            $cond: [
+              { $first: "$total_sales.count" },
+              { $first: "$total_sales.count" },
+              0,
+            ],
           },
           totalIncome: {
-            $first: "$total_income.count",
+            $cond: [
+              { $first: "$total_income.count" },
+              { $first: "$total_income.count" },
+              0,
+            ],
           },
           totalExpense: {
-            $first: "$total_expense.count",
+            $cond: [
+              { $first: "$total_expense.count" },
+              { $first: "$total_expense.count" },
+              0,
+            ],
           },
         },
       },
+
       {
         $addFields: {
           totalBalance: {
@@ -159,6 +185,35 @@ exports.viewTransaction = asyncHandler(async (req, res, next) => {
       true,
       "View transaction",
       viewTransaction
+    );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// edit transaction
+exports.editTransaction = asyncHandler(async (req, res, next) => {
+  try {
+    let transactionId = req.params.id;
+    fieldNames.forEach((field) => {
+      if (req.body[field] != null) res.record[field] = req.body[field];
+    });
+    await Model.updateOne(
+      { _id: transactionId },
+      { $set: res.record },
+      { new: true }
+    );
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Update transaction successfully."
     );
   } catch (error) {
     console.log(error);
