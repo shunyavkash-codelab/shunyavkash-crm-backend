@@ -40,7 +40,8 @@ const accountManagementSchema = new mongoose.Schema(
       enum: ["card", "bankTransfer", "cash", "upi"],
     },
     collaborator: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
     invoiceUpload: {
       type: String,

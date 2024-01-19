@@ -53,7 +53,30 @@ exports.add = asyncHandler(async (req, res, next) => {
 // Get Account management
 exports.getAccountList = asyncHandler(async (req, res, next) => {
   try {
-    let aggregate = [];
+    let aggregate = [
+      {
+        $lookup: {
+          from: "clients",
+          localField: "collaborator",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+          as: "collaborator",
+        },
+      },
+      {
+        $addFields: {
+          collaborator: {
+            $first: "$collaborator.name",
+          },
+        },
+      },
+    ];
     const result = await Pagination(req, res, Model, aggregate);
     return Comman.setResponse(
       res,
@@ -185,13 +208,37 @@ exports.accountDashboard = asyncHandler(async (req, res, next) => {
 exports.viewTransaction = asyncHandler(async (req, res, next) => {
   try {
     let transactionId = req.params.id;
-    const viewTransaction = await Model.findOne({ _id: transactionId });
+    const viewTransaction = await Model.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(transactionId) } },
+      {
+        $lookup: {
+          from: "clients",
+          localField: "collaborator",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+          as: "collaborator",
+        },
+      },
+      {
+        $addFields: {
+          collaborator: {
+            $first: "$collaborator._id",
+          },
+        },
+      },
+    ]);
     return Comman.setResponse(
       res,
       200,
       true,
       "View transaction",
-      viewTransaction
+      viewTransaction[0]
     );
   } catch (error) {
     console.log(error);
