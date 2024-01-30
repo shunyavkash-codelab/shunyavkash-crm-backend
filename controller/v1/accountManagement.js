@@ -53,7 +53,20 @@ exports.add = asyncHandler(async (req, res, next) => {
 // Get Account management
 exports.getAccountList = asyncHandler(async (req, res, next) => {
   try {
+    let obj = {};
+    if (req.query.from && req.query.to) {
+      obj.date = {
+        $gte: new Date(req.query.from + "T00:00:00.000Z"),
+        $lte: new Date(req.query.to + "T23:59:59.999Z"),
+      };
+    }
+    if (req.query.filter) {
+      obj.type = req.query.filter;
+    }
     let aggregate = [
+      {
+        $match: obj,
+      },
       {
         $lookup: {
           from: "clients",
