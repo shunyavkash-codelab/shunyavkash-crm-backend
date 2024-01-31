@@ -54,6 +54,13 @@ exports.add = asyncHandler(async (req, res, next) => {
 exports.getAccountList = asyncHandler(async (req, res, next) => {
   try {
     let obj = {};
+    if (req.query.search) {
+      const searchRegex = new RegExp(req.query.search, "i");
+      obj["$or"] = [
+        { title: { $regex: searchRegex } },
+        { invoiceOwner: { $regex: searchRegex } },
+      ];
+    }
     if (req.query.from && req.query.to) {
       obj.date = {
         $gte: new Date(req.query.from + "T00:00:00.000Z"),
@@ -284,6 +291,27 @@ exports.editTransaction = asyncHandler(async (req, res, next) => {
       200,
       true,
       "Update transaction successfully."
+    );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// delete transaction
+exports.deleteTransaction = asyncHandler(async (req, res, next) => {
+  try {
+    await Model.findByIdAndDelete(req.params.id);
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Transaction delete successfully."
     );
   } catch (error) {
     console.log(error);

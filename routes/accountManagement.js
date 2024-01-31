@@ -6,12 +6,13 @@ const {
   accountDashboard,
   viewTransaction,
   editTransaction,
+  deleteTransaction,
 } = require("../controller/v1/accountManagement");
 const errorHandal = require("../middleware/comman").errorHandal;
 const { getRecord } = require("../middleware/getRecord");
 const accountManagement = require("../model/accountManagement");
 const { authenticateToken, auth } = require("../middleware/verifyToken");
-const Schema = require("../validationSchema/accountManagementSchema");
+const Schema = require("../validationSchema/accountManageSchema")
 let Model = accountManagement;
 
 // create new salary
@@ -39,6 +40,15 @@ router.patch(
   auth(0),
   getRecord(Model),
   editTransaction
+);
+
+// delete transaction
+router.delete(
+  "/:id",
+  authenticateToken,
+  auth(0),
+  getRecord(Model),
+  deleteTransaction
 );
 
 module.exports = router;
