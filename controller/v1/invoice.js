@@ -110,12 +110,18 @@ exports.checkInvoiceNum = asyncHandler(async (req, res, next) => {
 // get invoice list
 exports.invoiceList = asyncHandler(async (req, res, next) => {
   try {
-    let search = {};
+    let obj = {};
     if (req.query.search) {
-      search = { invoiceNumber: { $regex: req.query.search, $options: "i" } };
+      obj.invoiceNumber = { $regex: req.query.search, $options: "i" };
+    }
+    if (req.query.from && req.query.to) {
+      obj.invoiceDate = {
+        $gte: new Date(req.query.from + "T00:00:00.000Z"),
+        $lte: new Date(req.query.to + "T23:59:59.999Z"),
+      };
     }
     const aggregate = [
-      { $match: search },
+      { $match: obj },
       {
         $lookup: {
           from: "users",
