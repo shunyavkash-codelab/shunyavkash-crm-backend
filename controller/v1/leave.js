@@ -3,13 +3,13 @@ const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
 const Leave = require("../../model/leave");
+const moment = require("moment");
 var Model = Leave;
 
 const fieldNames = ["status", "description"];
 
 exports.applyLeave = asyncHandler(async (req, res) => {
   try {
-    console.log("object");
     req.body.userId = req.user._id;
     let already = await Model.findOne(req.body);
     if (already) {
@@ -118,9 +118,20 @@ exports.approveLeaves = asyncHandler(async (req, res) => {
     if (req.query.search) {
       search.userName = { $regex: req.query.search, $options: "i" };
     }
+    let today = moment().format("YYYY-MM-DD");
     const aggregate = [
       {
-        $match: { status: "approve" },
+        $match: {
+          status: "approve",
+          startDate: {
+            $gte: new Date(today + "T00:00:00.000Z"),
+            $lte: new Date(today + "T23:59:59.999Z"),
+          },
+          endDate: {
+            $gte: new Date(today + "T00:00:00.000Z"),
+            $lte: new Date(today + "T23:59:59.999Z"),
+          },
+        },
       },
       {
         $lookup: {
@@ -169,7 +180,7 @@ exports.approveLeaves = asyncHandler(async (req, res) => {
 // get userId wise leave
 exports.getLeaveByUserId = asyncHandler(async (req, res) => {
   let userId = req.params.id;
-  const leave = await Model.find({ userId: userId });
+  const leave = await Model.find({ userId: userId }).sort({ createdAt: -1 });
   return Comman.setResponse(
     res,
     200,
@@ -184,6 +195,7 @@ exports.leaveDashboard = asyncHandler(async (req, res) => {
   let obj = {};
   if (req.query.userId) {
     obj.userId = new mongoose.Types.ObjectId(req.query.userId);
+    obj.status = "approve";
   }
   const leaveData = await Model.aggregate([
     { $match: obj },

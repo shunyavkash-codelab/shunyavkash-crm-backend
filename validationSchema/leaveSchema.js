@@ -7,10 +7,20 @@ Schema.applyLeaveSchema = [
   check("startDayType")
     .notEmpty()
     .withMessage("starDayType is a required field"),
-  check("endDayType").notEmpty().withMessage("endDayType is a required field"),
+  check("endDayType").custom((value, { req }) => {
+    if (req.body.moreDay === true && !value) {
+      throw new Error("endDayType is a required field");
+    }
+    return true;
+  }),
   check("reason").notEmpty().withMessage("reason is a required field"),
   check("startDate").notEmpty().withMessage("startDate is a required field"),
-  check("endDate").notEmpty().withMessage("endDate is a required field"),
+  check("endDate").custom((value, { req }) => {
+    if (req.body.moreDay === true && !value) {
+      throw new Error("endDayType is a required field");
+    }
+    return true;
+  }),
 ];
 
 Schema.editLeaveSchema = [
