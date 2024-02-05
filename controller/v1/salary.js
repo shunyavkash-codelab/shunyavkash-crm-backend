@@ -72,7 +72,10 @@ exports.add = asyncHandler(async (req, res, next) => {
       }
     }
     let dynamicData = {
-      month: moment().subtract(1, "months").endOf("month").format("MMMM"),
+      month: moment()
+        .subtract(1, "months")
+        .endOf("month")
+        .format("MMMM - YYYY"),
       employeeName: employee.name,
       ctc: employee.ctc,
       employeeCode: employee.employeeId,
