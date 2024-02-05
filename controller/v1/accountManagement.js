@@ -63,8 +63,8 @@ exports.getAccountList = asyncHandler(async (req, res, next) => {
     }
     if (req.query.from && req.query.to) {
       obj.date = {
-        $gte: new Date(req.query.from + "T00:00:00.000Z"),
-        $lte: new Date(req.query.to + "T23:59:59.999Z"),
+        $gte: new Date(req.query.from + "T18:30:00.000Z"),
+        $lte: new Date(req.query.to + "T18:29:59.999Z"),
       };
     }
     if (req.query.filter) {
