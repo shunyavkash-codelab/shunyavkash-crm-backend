@@ -19,7 +19,7 @@ const fieldNames = [
 // create new bank
 exports.add = asyncHandler(async (req, res, next) => {
   try {
-    const already = await Model.find({ userId: req.user.id }).select(
+    const already = await Model.find({ userId: req.body.userId }).select(
       "accountNumber defaultBank"
     );
     for (let i = 0; i < already.length; i++) {
@@ -37,7 +37,6 @@ exports.add = asyncHandler(async (req, res, next) => {
       }
     }
 
-    req.body.userId = req.user.id;
     req.body.defaultBank = already.length == 0 ? true : req.body.defaultBank;
 
     const bank = await Model.create(req.body);

@@ -21,7 +21,7 @@ router.post(
   Schema.addSchema,
   errorHandal,
   authenticateToken,
-  auth(0, 1),
+  auth(0, 1, 2),
   add
 );
 
@@ -35,7 +35,7 @@ router.get("/user/:id", authenticateToken, auth(0, 1, 2), getBankByUserId);
 router.get(
   "/:id",
   authenticateToken,
-  auth(1, 2),
+  auth(0, 1, 2),
   Schema.getBankByIdSchema,
   errorHandal,
   getRecord(Model),
@@ -46,12 +46,12 @@ router.get(
 router.delete(
   "/:id",
   authenticateToken,
-  auth(1, 2),
+  auth(0, 1, 2),
   getRecord(Model),
   removeBankById
 );
 
 // edit defult bank
-router.patch("/:id", authenticateToken, auth(0, 1), editDefaultBank);
+router.patch("/:id", authenticateToken, auth(0, 1, 2), editDefaultBank);
 
 module.exports = router;
