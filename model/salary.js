@@ -29,6 +29,9 @@ const salarySchema = new mongoose.Schema(
     date: {
       type: Date,
     },
+    pdf: {
+      type: String,
+    },
   },
 
   { timestamps: true, versionKey: false }

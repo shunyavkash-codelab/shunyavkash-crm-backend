@@ -98,6 +98,9 @@ const userSchema = new mongoose.Schema(
       type: Number,
       enum: [0, 1, 2], // 0 - admin, 1 - manager, 2 - employee
     },
+    ctc: {
+      type: Number,
+    },
     gender: {
       type: String,
     },

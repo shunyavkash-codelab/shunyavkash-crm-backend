@@ -22,6 +22,7 @@ const fieldNames = [
   "landmark",
   "pincode",
   "role",
+  "ctc",
   "designation",
   "employeeId",
   "isDeleted",
