@@ -37,7 +37,7 @@ const accountManagementSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["card", "bankTransfer", "cash", "upi"],
+      enum: ["bankTransfer", "cash", "upi"],
     },
     collaborator: {
       type: mongoose.Schema.Types.ObjectId,

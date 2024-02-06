@@ -110,7 +110,7 @@ exports.all = asyncHandler(async (req, res) => {
     );
   }
 });
-
+console.log(moment().endOf("day").toISOString());
 // only approve leave request
 exports.approveLeaves = asyncHandler(async (req, res) => {
   try {
@@ -118,19 +118,24 @@ exports.approveLeaves = asyncHandler(async (req, res) => {
     if (req.query.search) {
       search.userName = { $regex: req.query.search, $options: "i" };
     }
-    let today = moment().format("YYYY-MM-DD");
     const aggregate = [
       {
         $match: {
           status: "approve",
-          startDate: {
-            $gte: new Date(today + "T00:00:00.000Z"),
-            $lte: new Date(today + "T23:59:59.999Z"),
-          },
-          endDate: {
-            $gte: new Date(today + "T00:00:00.000Z"),
-            $lte: new Date(today + "T23:59:59.999Z"),
-          },
+          $or: [
+            {
+              startDate: {
+                $gte: new Date(moment().startOf("day").toISOString()),
+                $lte: new Date(moment().endOf("day").toISOString()),
+              },
+            },
+            {
+              endDate: {
+                $gte: new Date(moment().startOf("day").toISOString()),
+                $lte: new Date(moment().endOf("day").toISOString()),
+              },
+            },
+          ],
         },
       },
       {

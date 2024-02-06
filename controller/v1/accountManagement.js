@@ -5,9 +5,11 @@ const Pagination = require("../../middleware/pagination");
 const accountManagement = require("../../model/accountManagement");
 const { validationResult } = require("express-validator");
 const { fileUploading } = require("../../middleware/fileUploading");
+const moment = require("moment");
 var Model = accountManagement;
 
 let fieldNames = [
+  "type",
   "date",
   "title",
   "description",
@@ -63,8 +65,8 @@ exports.getAccountList = asyncHandler(async (req, res, next) => {
     }
     if (req.query.from && req.query.to) {
       obj.date = {
-        $gte: new Date(req.query.from + "T18:30:00.000Z"),
-        $lte: new Date(req.query.to + "T18:29:59.999Z"),
+        $gte: new Date(moment(req.query.from).startOf("day").toISOString()),
+        $lte: new Date(moment(req.query.to).endOf("day").toISOString()),
       };
     }
     if (req.query.filter) {
