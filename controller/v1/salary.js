@@ -9,6 +9,7 @@ const { generatePDF } = require("../../middleware/salarySlipPDF");
 const User = require("../../model/user");
 const Bank = require("../../model/bank");
 const Leave = require("../../model/leave");
+const numberToWords = require("number-to-words");
 var Model = Salary;
 
 // create salary
@@ -72,6 +73,7 @@ exports.add = asyncHandler(async (req, res, next) => {
       }
     }
     let dynamicData = {
+      payDate: moment(req.body.date).format("DD/MM/YYYY"),
       month: moment()
         .subtract(1, "months")
         .endOf("month")
@@ -95,6 +97,9 @@ exports.add = asyncHandler(async (req, res, next) => {
       incomeTotal: Number(req.body.amount) + Number(req.body.incentive),
       deductionTotal: "0",
       netSalary: Number(req.body.amount) + Number(req.body.incentive),
+      netSalaryInWord: numberToWords
+        .toWords(Number(req.body.amount) + Number(req.body.incentive))
+        .replace(",", ""),
     };
     generatePDF(dynamicData).then(async (pdfUrl) => {
       req.body.pdf = pdfUrl;
