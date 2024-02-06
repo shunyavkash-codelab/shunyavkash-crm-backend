@@ -20,4 +20,6 @@ router.post(
 // get salary
 router.get("/user/:id", authenticateToken, getSalaryList);
 
+router.get("/", authenticateToken, auth(0), getSalaryList);
+
 module.exports = router;

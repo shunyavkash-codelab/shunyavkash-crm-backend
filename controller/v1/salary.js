@@ -121,7 +121,14 @@ exports.add = asyncHandler(async (req, res, next) => {
 // Get salary
 exports.getSalaryList = asyncHandler(async (req, res, next) => {
   try {
-    let obj = { employee: new mongoose.Types.ObjectId(req.params.id) };
+    let obj = {};
+    if (req.params.id) {
+      obj.employee = new mongoose.Types.ObjectId(req.params.id);
+    }
+    let search = {};
+    if (req.query.search) {
+      search = { employee: { $regex: req.query.search, $options: "i" } };
+    }
     if (req.query.from && req.query.to) {
       obj.date = {
         $gte: new Date(req.query.from + "T18:30:00.000Z"),
@@ -153,6 +160,9 @@ exports.getSalaryList = asyncHandler(async (req, res, next) => {
             $first: "$employee.name",
           },
         },
+      },
+      {
+        $match: search,
       },
     ];
     const result = await Pagination(req, res, Model, aggregate);
