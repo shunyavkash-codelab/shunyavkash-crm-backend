@@ -11,7 +11,6 @@ cloudinary.config({
 exports.generatePDF = async (dynamicData) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-
   // Load the HTML content from the template file
   const htmlContent = await fs.readFile(
     path.join(__dirname, "../public/salarySlipTemplate.html"),
@@ -20,26 +19,32 @@ exports.generatePDF = async (dynamicData) => {
   await page.setContent(htmlContent);
   await page.evaluate((data) => {
     document.querySelector("#month").innerText = data.month;
+    document.querySelector("#payDate").innerText = data.payDate;
     document.querySelector("#employeeName").innerText = data.employeeName;
-    document.querySelector("#ctc").innerText = data.ctc;
-    document.querySelector("#employeeCode").innerText = data.employeeCode;
-    document.querySelector("#designation").innerText = data.designation;
+    document.querySelector("#ctc").innerText = data.ctc || "N/A";
+    document.querySelector("#employeeCode").innerText =
+      data.employeeCode || "N/A";
+    document.querySelector("#designation").innerText =
+      data.designation || "N/A";
     document.querySelector("#presentDay").innerText = data.presentDay;
-    document.querySelector("#ifsc").innerText = data.ifsc;
+    // document.querySelector("#ifsc").innerText = data.ifsc;
     document.querySelector("#paidLeave").innerText = data.paidLeave;
     document.querySelector("#unpaidLeaveDays").innerText = data.unpaidLeaveDays;
-    document.querySelector("#bankAccNum").innerText = data.bankAccNum;
-    document.querySelector("#eligibleDay").innerText = data.eligibleDay;
-    document.querySelector("#bankName").innerText = data.bankName;
+    // document.querySelector("#bankAccNum").innerText = data.bankAccNum;
+    // document.querySelector("#eligibleDay").innerText = data.eligibleDay;
+    // document.querySelector("#bankName").innerText = data.bankName;
     document.querySelector("#basicSalary").innerText = data.basicSalary;
     document.querySelector("#specialAllowance").innerText =
-      data.specialAllowance;
-    document.querySelector("#pf").innerText = data.pf;
-    document.querySelector("#professionalTax").innerText = data.professionalTax;
-    document.querySelector("#tds").innerText = data.tds;
+      data.specialAllowance || 0;
+    document.querySelector("#pf").innerText = data.pf || "0";
+    document.querySelector("#professionalTax").innerText =
+      data.professionalTax || "0";
+    document.querySelector("#tds").innerText = data.tds || "0";
     document.querySelector("#incomeTotal").innerText = data.incomeTotal;
     document.querySelector("#deductionTotal").innerText = data.deductionTotal;
     document.querySelector("#netSalary").innerText = data.netSalary;
+    document.querySelector("#netSalary1").innerText = data.netSalary;
+    document.querySelector("#netSalaryInWord").innerText = data.netSalaryInWord;
   }, dynamicData);
   let filename = path.join(
     __dirname,

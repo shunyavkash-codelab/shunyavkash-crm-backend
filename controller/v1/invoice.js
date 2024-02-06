@@ -4,6 +4,7 @@ const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
 const Invoice = require("../../model/invoice");
 const InvoiceNumber = require("../../model/invoiceNumber");
+const moment = require("moment");
 const Model = Invoice;
 
 exports.generateInvoiceNum = asyncHandler(async (req, res, next) => {
@@ -116,8 +117,8 @@ exports.invoiceList = asyncHandler(async (req, res, next) => {
     }
     if (req.query.from && req.query.to) {
       obj.invoiceDate = {
-        $gte: new Date(req.query.from + "T18:30:00.000Z"),
-        $lte: new Date(req.query.to + "T18:29:59.999Z"),
+        $gte: new Date(moment(req.query.from).startOf("day").toISOString()),
+        $lte: new Date(moment(req.query.to).endOf("day").toISOString()),
       };
     }
     const aggregate = [
