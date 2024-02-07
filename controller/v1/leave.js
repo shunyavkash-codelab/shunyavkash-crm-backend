@@ -110,7 +110,7 @@ exports.all = asyncHandler(async (req, res) => {
     );
   }
 });
-console.log(moment().endOf("day").toISOString());
+
 // only approve leave request
 exports.approveLeaves = asyncHandler(async (req, res) => {
   try {

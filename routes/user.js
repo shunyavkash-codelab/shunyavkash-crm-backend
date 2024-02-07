@@ -4,7 +4,6 @@ const {
   addEmployee,
   login,
   getUserById,
-  getUsers,
   getEmployees,
   editUser,
   forgetPassword,
@@ -13,6 +12,9 @@ const {
   getAllEmployees,
   deleteEmployee,
   getAllUser,
+  getManagers,
+  getInvitedEmployees,
+  memberDashboard,
 } = require("../controller/v1/user");
 const Schema = require("../validationSchema/userSchema");
 const errorHandal = require("../middleware/comman").errorHandal;
@@ -59,7 +61,7 @@ router.post(
 );
 
 // multiple get user
-router.get("/get-users", authenticateToken, getUsers);
+router.get("/get-managers", authenticateToken, getManagers);
 
 // multiple get employee
 router.get("/get-employee", authenticateToken, getEmployees);
@@ -69,6 +71,17 @@ router.get("/get-all-employees", authenticateToken, auth(0), getAllEmployees);
 
 // get All Employees
 router.get("/get-all-user", authenticateToken, getAllUser);
+
+// get All invited Employees
+router.get(
+  "/get-invited-user",
+  authenticateToken,
+  auth(0),
+  getInvitedEmployees
+);
+
+// dashboard
+router.get("/dashboard", authenticateToken, auth(0), memberDashboard);
 
 // single get user
 router.get(

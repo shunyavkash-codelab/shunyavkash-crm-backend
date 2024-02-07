@@ -13,6 +13,12 @@ exports.authenticateToken = (req, res, next) => {
       let existUser = await User.findById(user.id);
       if (!existUser)
         return res.status(401).send({ message: "User not found." });
+      if (!existUser.isActive)
+        return res.status(400).send({
+          message:
+            "Your account is deactivated. Please contact the admin for assistance.",
+          data: { logout: true },
+        });
       req.user = existUser;
       next();
     });

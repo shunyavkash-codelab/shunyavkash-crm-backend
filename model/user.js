@@ -77,6 +77,10 @@ const userSchema = new mongoose.Schema(
       enum: [0, 1], // 0 - not accepted, 1 - accept
       default: 0,
     },
+    isInvited: {
+      type: Boolean,
+      default: false,
+    },
     isDeleted: {
       type: Boolean,
       default: false,
