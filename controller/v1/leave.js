@@ -119,6 +119,7 @@ exports.approveLeaves = asyncHandler(async (req, res) => {
       search.userName = { $regex: req.query.search, $options: "i" };
     }
     console.log(req.query.date, "=========121");
+    console.log(new Date(), "=========122");
     const aggregate = [
       {
         $match: {
