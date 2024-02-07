@@ -5,6 +5,7 @@ const {
   getClients,
   getClientById,
   editClient,
+  deleteClient,
 } = require("../controller/v1/client");
 const Schema = require("../validationSchema/clientSchema");
 const errorHandal = require("../middleware/comman").errorHandal;
@@ -16,7 +17,7 @@ var Model = Client;
 router.post(
   "/add",
   authenticateToken,
-  auth(0, 1),
+  auth(0),
   Schema.addSchema,
   errorHandal,
   add
@@ -40,11 +41,22 @@ router.get(
 router.patch(
   "/:id",
   authenticateToken,
-  auth(0, 1),
+  auth(0),
   Schema.getClientByIdSchema,
   errorHandal,
   getRecord(Model),
   editClient
+);
+
+// delete client
+router.delete(
+  "/:id",
+  authenticateToken,
+  auth(0),
+  Schema.getClientByIdSchema,
+  errorHandal,
+  getRecord(Model),
+  deleteClient
 );
 
 module.exports = router;

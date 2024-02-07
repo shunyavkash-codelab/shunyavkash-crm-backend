@@ -73,7 +73,10 @@ exports.getProjectById = asyncHandler(async (req, res, next) => {
   try {
     let project = await Model.aggregate([
       {
-        $match: { _id: new mongoose.Types.ObjectId(req.params.id) },
+        $match: {
+          _id: new mongoose.Types.ObjectId(req.params.id),
+          isDeleted: false,
+        },
       },
       {
         $lookup: {
@@ -137,7 +140,7 @@ exports.getProjectById = asyncHandler(async (req, res, next) => {
 // get multiple project
 exports.getProjects = asyncHandler(async (req, res, next) => {
   try {
-    let search = {};
+    let search = { isDeleted: false };
     if (req.query.search) {
       search = { name: { $regex: req.query.search, $options: "i" } };
     }
@@ -255,6 +258,26 @@ exports.getProjectsByClient = asyncHandler(async (req, res, next) => {
       "Get projects successfully.",
       project
     );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// delete project
+exports.deleteProject = asyncHandler(async (req, res, next) => {
+  try {
+    await Model.updateOne(
+      { _id: req.params.id },
+      { isDeleted: true },
+      { new: true }
+    );
+    return Comman.setResponse(res, 200, true, "Delete project successfully.");
   } catch (error) {
     console.log(error);
     return Comman.setResponse(

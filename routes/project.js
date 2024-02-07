@@ -6,6 +6,7 @@ const {
   getProjects,
   getProjectById,
   getProjectsByClient,
+  deleteProject,
 } = require("../controller/v1/project");
 const Schema = require("../validationSchema/projectSchema");
 const errorHandal = require("../middleware/comman").errorHandal;
@@ -20,12 +21,12 @@ router.post(
   Schema.addSchema,
   errorHandal,
   authenticateToken,
-  auth(0, 1),
+  auth(0),
   add
 );
 
 // edit project
-router.patch("/:id", authenticateToken, auth(0, 1), getRecord(Model), edit);
+router.patch("/:id", authenticateToken, auth(0), getRecord(Model), edit);
 
 // multiple get project
 router.get("/get-projects", authenticateToken, getProjects);
@@ -40,6 +41,18 @@ router.get(
   getProjectById
 );
 
+// get project names
 router.get("/get-project-name/:id", getProjectsByClient);
+
+// get project names
+router.delete(
+  "/:id",
+  authenticateToken,
+  auth(0),
+  Schema.getProjectByIdSchema,
+  errorHandal,
+  getRecord(Model),
+  deleteProject
+);
 
 module.exports = router;
