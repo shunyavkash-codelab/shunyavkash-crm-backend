@@ -125,14 +125,22 @@ exports.approveLeaves = asyncHandler(async (req, res) => {
           $or: [
             {
               startDate: {
-                $gte: new Date(moment().startOf("day").toISOString()),
-                $lte: new Date(moment().endOf("day").toISOString()),
+                $gte: new Date(
+                  moment(req.query.date).startOf("day").toISOString()
+                ),
+                $lte: new Date(
+                  moment(req.query.date).endOf("day").toISOString()
+                ),
               },
             },
             {
               endDate: {
-                $gte: new Date(moment().startOf("day").toISOString()),
-                $lte: new Date(moment().endOf("day").toISOString()),
+                $gte: new Date(
+                  moment(req.query.date).startOf("day").toISOString()
+                ),
+                $lte: new Date(
+                  moment(req.query.date).endOf("day").toISOString()
+                ),
               },
             },
           ],
