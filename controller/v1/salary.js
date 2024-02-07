@@ -4,7 +4,6 @@ const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
 const Salary = require("../../model/salary");
-const { validationResult } = require("express-validator");
 const { generatePDF } = require("../../middleware/salarySlipPDF");
 const User = require("../../model/user");
 const Bank = require("../../model/bank");
@@ -103,7 +102,14 @@ exports.add = asyncHandler(async (req, res, next) => {
     };
     generatePDF(dynamicData).then(async (pdfUrl) => {
       req.body.pdf = pdfUrl;
-      const salary = await Model.create(req.body);
+      let salary;
+      if (req.body._id) {
+        salary = await Model.findByIdAndUpdate(req.body._id, req.body, {
+          new: true,
+        });
+      } else {
+        salary = await Model.create(req.body);
+      }
       return Comman.setResponse(
         res,
         201,
@@ -126,7 +132,7 @@ exports.add = asyncHandler(async (req, res, next) => {
 // Get salary
 exports.getSalaryList = asyncHandler(async (req, res, next) => {
   try {
-    let obj = {};
+    let obj = { isDeleted: false };
     if (req.params.id) {
       obj.employee = new mongoose.Types.ObjectId(req.params.id);
     }
@@ -178,6 +184,26 @@ exports.getSalaryList = asyncHandler(async (req, res, next) => {
       "Salary get successfully.",
       result
     );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// delete salary
+exports.deleteSalary = asyncHandler(async (req, res, next) => {
+  try {
+    await Model.updateOne(
+      { _id: req.params.id },
+      { isDeleted: true },
+      { new: true }
+    );
+    return Comman.setResponse(res, 200, true, "Delete salary successfully.");
   } catch (error) {
     console.log(error);
     return Comman.setResponse(

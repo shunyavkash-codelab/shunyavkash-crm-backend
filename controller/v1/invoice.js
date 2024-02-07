@@ -111,7 +111,7 @@ exports.checkInvoiceNum = asyncHandler(async (req, res, next) => {
 // get invoice list
 exports.invoiceList = asyncHandler(async (req, res, next) => {
   try {
-    let obj = {};
+    let obj = { isDeleted: false };
     if (req.query.search) {
       obj.invoiceNumber = { $regex: req.query.search, $options: "i" };
     }
@@ -202,6 +202,7 @@ exports.getInvoiceById = asyncHandler(async (req, res, next) => {
       {
         $match: {
           _id: new mongoose.Types.ObjectId(req.params.id),
+          isDeleted: false,
         },
       },
       {
@@ -275,5 +276,25 @@ exports.getInvoiceById = asyncHandler(async (req, res, next) => {
     );
   } catch (error) {
     Comman.setResponse(res, 400, false, "Something went wrong, please retry");
+  }
+});
+
+// delete invoice
+exports.deleteInvoice = asyncHandler(async (req, res, next) => {
+  try {
+    await Model.updateOne(
+      { _id: req.params.id },
+      { isDeleted: true },
+      { new: true }
+    );
+    return Comman.setResponse(res, 200, true, "Delete invoice successfully.");
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
   }
 });

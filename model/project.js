@@ -49,6 +49,10 @@ const projectSchema = new mongoose.Schema(
       type: String, // initial, inProgress, completed
       default: "initial",
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   { timestamps: true, versionKey: false }

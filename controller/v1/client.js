@@ -82,6 +82,7 @@ exports.getClientById = asyncHandler(async (req, res, next) => {
       {
         $match: {
           _id: new mongoose.Types.ObjectId(req.params.id),
+          status: 0,
         },
       },
       {
@@ -156,7 +157,7 @@ exports.getClientById = asyncHandler(async (req, res, next) => {
 // get multiple client
 exports.getClients = asyncHandler(async (req, res, next) => {
   try {
-    let search = {};
+    let search = { status: 0 };
     if (req.query.search) {
       search = { name: { $regex: req.query.search, $options: "i" } };
     }
@@ -245,6 +246,22 @@ exports.editClient = asyncHandler(async (req, res, next) => {
     }
     await Model.updateOne({ _id: req.params.id }, res.record, { new: true });
     return Comman.setResponse(res, 200, true, "Update client successfully.");
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// delete client
+exports.deleteClient = asyncHandler(async (req, res, next) => {
+  try {
+    await Model.updateOne({ _id: req.params.id }, { status: 1 }, { new: true });
+    return Comman.setResponse(res, 200, true, "Delete client successfully.");
   } catch (error) {
     console.log(error);
     return Comman.setResponse(

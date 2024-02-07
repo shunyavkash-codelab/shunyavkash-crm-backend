@@ -7,6 +7,7 @@ const {
   invoiceList,
   getInvoiceById,
   editInvoice,
+  deleteInvoice,
 } = require("../controller/v1/invoice");
 const errorHandal = require("../middleware/comman").errorHandal;
 const { getRecord } = require("../middleware/getRecord");
@@ -63,6 +64,17 @@ router.get(
   errorHandal,
   getRecord(Model),
   getInvoiceById
+);
+
+// delete invoice
+router.delete(
+  "/:id",
+  authenticateToken,
+  auth(0),
+  Schema.getInvoiceByIdSchema,
+  errorHandal,
+  getRecord(Model),
+  deleteInvoice
 );
 
 module.exports = router;

@@ -13,4 +13,7 @@ Schema.addSchema = [
   check("date").notEmpty().withMessage("Date is required field"),
 ];
 
+Schema.getSalaryByIdSchema = [
+  param("id").notEmpty().withMessage("id is a required field"),
+];
 module.exports = Schema;
