@@ -25,6 +25,7 @@ const fieldNames = [
   "ctc",
   "designation",
   "employeeId",
+  "isInvited",
   "isDeleted",
   "isActive",
   "gender",
@@ -352,9 +353,9 @@ exports.getUserById = asyncHandler(async (req, res, next) => {
 });
 
 // get multiple user by manager role wise
-exports.getUsers = asyncHandler(async (req, res, next) => {
+exports.getManagers = asyncHandler(async (req, res, next) => {
   try {
-    let search = { role: 1 };
+    let search = { role: 1, isDeleted: false };
     if (req.query.search) {
       search.name = { $regex: req.query.search, $options: "i" };
     }
@@ -410,7 +411,7 @@ exports.editUser = asyncHandler(async (req, res, next) => {
 // get multiple employees
 exports.getEmployees = asyncHandler(async (req, res, next) => {
   try {
-    let search = { role: 2, invitationStatus: 1, isDeleted: 0 };
+    let search = { role: 2, invitationStatus: 1, isDeleted: false };
     if (req.query.search) {
       search.name = { $regex: req.query.search, $options: "i" };
     }
@@ -475,7 +476,34 @@ exports.getAllUser = asyncHandler(async (req, res, next) => {
       res,
       200,
       true,
-      "Get employee successfully.",
+      "Get All employee successfully.",
+      result
+    );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// get invited employees
+exports.getInvitedEmployees = asyncHandler(async (req, res, next) => {
+  try {
+    let search = { isInvited: true, isDeleted: false };
+    if (req.query.search) {
+      search.name = { $regex: req.query.search, $options: "i" };
+    }
+    const aggregate = [{ $match: search }];
+    const result = await Pagination(req, res, Model, aggregate);
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Get Invited employee successfully.",
       result
     );
   } catch (error) {
@@ -494,10 +522,66 @@ exports.deleteEmployee = asyncHandler(async (req, res, next) => {
   try {
     await Model.findByIdAndUpdate(
       res.record._id,
-      { isDeleted: 1 },
+      { isDeleted: true },
       { new: true }
     );
     return Comman.setResponse(res, 200, true, "Deleted successfully.");
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// get Member dashboard
+exports.memberDashboard = asyncHandler(async (req, res, next) => {
+  try {
+    const aggregate = [
+      {
+        $match: {
+          isDeleted: false,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          manager: {
+            $sum: {
+              $cond: [
+                {
+                  $eq: ["$role", 1],
+                },
+                1,
+                0,
+              ],
+            },
+          },
+          employee: {
+            $sum: {
+              $cond: [
+                {
+                  $eq: ["$role", 2],
+                },
+                1,
+                0,
+              ],
+            },
+          },
+        },
+      },
+    ];
+    const result = await Model.aggregate(aggregate);
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Get Invited employee successfully.",
+      result[0]
+    );
   } catch (error) {
     console.log(error);
     return Comman.setResponse(
