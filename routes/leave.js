@@ -8,6 +8,7 @@ const {
   getLeaveByUserId,
   leaveDashboard,
   approveLeaves,
+  deleteLeave,
 } = require("../controller/v1/leave");
 const Schema = require("../validationSchema/leaveSchema");
 const { errorHandal } = require("../middleware/comman");
@@ -52,6 +53,17 @@ router.patch(
   errorHandal,
   getRecord(Model),
   edit
+);
+
+// delete leave
+router.delete(
+  "/:id",
+  authenticateToken,
+  auth(0),
+  Schema.getLeaveSchema,
+  errorHandal,
+  getRecord(Model),
+  deleteLeave
 );
 
 module.exports = router;

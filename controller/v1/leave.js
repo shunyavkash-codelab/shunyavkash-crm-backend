@@ -247,3 +247,24 @@ exports.leaveDashboard = asyncHandler(async (req, res) => {
     leaveData[0]
   );
 });
+
+// delete leave
+exports.deleteLeave = asyncHandler(async (req, res, next) => {
+  try {
+    await Model.findByIdAndDelete(req.params.id);
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Leave delete successfully."
+    );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
