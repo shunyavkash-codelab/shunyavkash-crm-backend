@@ -78,8 +78,8 @@ exports.add = asyncHandler(async (req, res, next) => {
         .endOf("month")
         .format("MMMM - YYYY"),
       employeeName: employee.name,
-      ctc: employee.ctc,
-      employeeCode: employee.employeeId,
+      ctc: employee.ctc || "N/A",
+      employeeCode: employee.employeeId || "N/A",
       designation: employee.designation || "Employee",
       presentDay: 22 - paidLeaveDays - unpaidLeaveDays || "22",
       unpaidLeaveDays: unpaidLeaveDays,
@@ -89,13 +89,15 @@ exports.add = asyncHandler(async (req, res, next) => {
       eligibleDay: 22 - unpaidLeaveDays || "22",
       paidLeave: paidLeaveDays,
       basicSalary: req.body.amount,
-      specialAllowance: req.body.incentive,
+      specialAllowance: req.body.incentive || "0",
+      hra: "0",
       pf: "0",
       professionalTax: "0",
       tds: "0",
       incomeTotal: Number(req.body.amount) + Number(req.body.incentive),
       deductionTotal: "0",
       netSalary: Number(req.body.amount) + Number(req.body.incentive),
+      netSalary1: Number(req.body.amount) + Number(req.body.incentive),
       netSalaryInWord: numberToWords
         .toWords(Number(req.body.amount) + Number(req.body.incentive))
         .replace(",", ""),

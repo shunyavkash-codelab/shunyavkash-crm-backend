@@ -37,7 +37,7 @@
             <tr>
               <td>
                 <h3 style="text-align: center; margin-bottom: 20px">
-                  Payslip - <span id="month">Febuary - 2024</span>
+                  Payslip - <span id="month">{{month}}</span>
                 </h3>
               </td>
             </tr>
@@ -73,11 +73,11 @@
                   <tr>
                     <td style="padding: 5px">Pay Date</td>
                     <td style="padding: 5px">
-                      : <span id="payDate">02/06/2024</span>
+                      : <span id="payDate">{{payDate}}</span>
                     </td>
                     <td style="padding: 5px" colspan="2">Employee Name</td>
                     <td style="padding: 5px" colspan="2">
-                      : <span id="employeeName">James Bond</span>
+                      : <span id="employeeName">{{employeeName}}</span>
                     </td>
                   </tr>
                   <tr>
@@ -85,33 +85,33 @@
                     <td style="padding: 5px">: 26</td>
                     <td style="padding: 5px" colspan="2">Employee ID</td>
                     <td style="padding: 5px" colspan="2">
-                      : <span id="employeeCode"> N/A</span>
+                      : <span id="employeeCode">{{employeeCode}}</span>
                     </td>
                   </tr>
                   <tr>
                     <td style="padding: 5px">Present Days</td>
                     <td style="padding: 5px">
-                      : <span id="presentDay">0</span>
+                      : <span id="presentDay">{{presentDay}}</span>
                     </td>
                     <td style="padding: 5px" colspan="2">Job Role</td>
                     <td style="padding: 5px" colspan="2">
-                      : <span id="designation">N/A</span>
+                      : <span id="designation">{{designation}}</span>
                     </td>
                   </tr>
                   <tr>
                     <td style="padding: 5px">Paid Leave</td>
                     <td style="padding: 5px">
-                      : <span id="paidLeave">0</span>
+                      : <span id="paidLeave">{{paidLeave}}</span>
                     </td>
                     <td style="padding: 5px" colspan="2">Employee CTC</td>
                     <td style="padding: 5px" colspan="2">
-                      : <span id="ctc">N/A</span>
+                      : <span id="ctc">{{ctc}}</span>
                     </td>
                   </tr>
                   <tr>
                     <td style="padding: 5px">Unpaid Leave</td>
                     <td style="padding: 5px">
-                      : <span id="unpaidLeaveDays">0</span>
+                      : <span id="unpaidLeaveDays">{{unpaidLeaveDays}}</span>
                     </td>
                   </tr>
                 </table>
@@ -176,7 +176,7 @@
                       "
                       id="basicSalary"
                     >
-                      0
+                      {{basicSalary}}
                     </td>
                     <td
                       colspan="2"
@@ -192,7 +192,7 @@
                       "
                       id="professionalTax"
                     >
-                      0
+                      {{professionalTax}}
                     </td>
                   </tr>
                   <tr>
@@ -210,7 +210,7 @@
                       "
                       id="hra"
                     >
-                      0
+                      {{hra}}
                     </td>
                     <td
                       colspan="2"
@@ -226,7 +226,7 @@
                       "
                       id="pf"
                     >
-                      0
+                      {{pf}}
                     </td>
                   </tr>
                   <tr>
@@ -244,7 +244,7 @@
                       "
                       id="specialAllowance"
                     >
-                      0
+                      {{specialAllowance}}
                     </td>
                     <td
                       colspan="2"
@@ -260,7 +260,7 @@
                       "
                       id="tds"
                     >
-                      0
+                      {{tds}}
                     </td>
                   </tr>
                   <tr>
@@ -302,7 +302,7 @@
                       "
                       id="incomeTotal"
                     >
-                      0
+                      {{incomeTotal}}
                     </td>
                     <td
                       colspan="2"
@@ -318,7 +318,7 @@
                       "
                       id="deductionTotal"
                     >
-                      0
+                      {{deductionTotal}}
                     </td>
                   </tr>
                   <tr style="border-top: 1px solid #000">
@@ -335,7 +335,9 @@
                     >
                       Net Pay
                     </td>
-                    <td style="text-align: center" id="netSalary">0</td>
+                    <td style="text-align: center" id="netSalary">
+                      {{netSalary}}
+                    </td>
                   </tr>
                 </table>
               </td>
@@ -354,7 +356,7 @@
                       "
                       id="netSalary1"
                     >
-                      0
+                      {{netSalary1}}
                     </td>
                   </tr>
                   <tr>
@@ -366,7 +368,7 @@
                       "
                       id="netSalaryInWord"
                     >
-                      Zero
+                      {{netSalaryInWord}}
                     </td>
                   </tr>
                 </table>
