@@ -1,4 +1,3 @@
-const puppeteer = require("puppeteer");
 const cloudinary = require("cloudinary");
 const fs = require("fs").promises;
 const path = require("path");
