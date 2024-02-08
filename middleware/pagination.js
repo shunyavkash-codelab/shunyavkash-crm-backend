@@ -2,9 +2,8 @@ async function Pagination(req, res, model, aggregationSchema) {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const column_name = req.query?.sortField || "createdAt";
-  const OrderBy = req.query?.orderBy == "ASC" ? 1 : -1;
+  const OrderBy = req.query?.orderBy == "asc" ? 1 : -1;
   const sortData = { [column_name]: OrderBy };
-
   const skip = (page - 1) * limit;
 
   const facetStage = [
@@ -24,7 +23,9 @@ async function Pagination(req, res, model, aggregationSchema) {
   const modifiedAggregation = [...aggregationSchema, ...facetStage];
 
   try {
-    const aggregationResult = await model.aggregate(modifiedAggregation);
+    const aggregationResult = await model
+      .aggregate(modifiedAggregation)
+      .collation({ locale: "en" });
 
     const records = aggregationResult[0].totalDocs;
     const pages = Math.ceil(records / limit);
