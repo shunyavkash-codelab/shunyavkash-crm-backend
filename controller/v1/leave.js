@@ -76,6 +76,7 @@ exports.all = asyncHandler(async (req, res) => {
             {
               $project: {
                 name: 1,
+                role: 1,
               },
             },
           ],
@@ -86,6 +87,9 @@ exports.all = asyncHandler(async (req, res) => {
         $addFields: {
           userName: {
             $first: "$userName.name",
+          },
+          userRole: {
+            $first: "$userName.role",
           },
         },
       },
@@ -252,12 +256,7 @@ exports.leaveDashboard = asyncHandler(async (req, res) => {
 exports.deleteLeave = asyncHandler(async (req, res, next) => {
   try {
     await Model.findByIdAndDelete(req.params.id);
-    return Comman.setResponse(
-      res,
-      200,
-      true,
-      "Leave delete successfully."
-    );
+    return Comman.setResponse(res, 200, true, "Leave delete successfully.");
   } catch (error) {
     console.log(error);
     return Comman.setResponse(

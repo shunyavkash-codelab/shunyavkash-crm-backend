@@ -67,7 +67,7 @@ router.get("/get-managers", authenticateToken, getManagers);
 router.get("/get-employee", authenticateToken, getEmployees);
 
 // get All Employees
-router.get("/get-all-employees", authenticateToken, auth(0), getAllEmployees);
+router.get("/get-all-employees", authenticateToken, getAllEmployees);
 
 // get All Employees
 router.get("/get-all-user", authenticateToken, getAllUser);
@@ -81,7 +81,7 @@ router.get(
 );
 
 // dashboard
-router.get("/dashboard", authenticateToken, auth(0), memberDashboard);
+router.get("/dashboard", authenticateToken, memberDashboard);
 
 // single get user
 router.get(

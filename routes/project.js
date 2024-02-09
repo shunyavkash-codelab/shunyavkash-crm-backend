@@ -21,12 +21,12 @@ router.post(
   Schema.addSchema,
   errorHandal,
   authenticateToken,
-  auth(0),
+  auth(0, 1),
   add
 );
 
 // edit project
-router.patch("/:id", authenticateToken, auth(0), getRecord(Model), edit);
+router.patch("/:id", authenticateToken, auth(0, 1), getRecord(Model), edit);
 
 // multiple get project
 router.get("/get-projects", authenticateToken, getProjects);
