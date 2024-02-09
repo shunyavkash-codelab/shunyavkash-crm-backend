@@ -395,8 +395,20 @@ exports.editUser = asyncHandler(async (req, res, next) => {
           res.record[file] = await fileUploading(req.files[file]);
       }
     }
-    await Model.updateOne({ _id: req.params.id }, res.record, { new: true });
-    return Comman.setResponse(res, 200, true, "Update user successfully.");
+    let user = await Model.findOneAndUpdate(
+      { _id: req.params.id },
+      res.record,
+      {
+        new: true,
+      }
+    );
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Update user successfully.",
+      user
+    );
   } catch (error) {
     console.log(error);
     return Comman.setResponse(
