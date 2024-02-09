@@ -471,7 +471,7 @@ exports.getAllUser = asyncHandler(async (req, res, next) => {
     }
     // const aggregate = [{ $match: search }, { $project: { name: 1 } }];
     // const result = await Pagination(req, res, Model, aggregate);
-    let result = await Model.find(search).select("name");
+    let result = await Model.find(search).select("name profile_img isActive");
     return Comman.setResponse(
       res,
       200,
