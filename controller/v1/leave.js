@@ -4,6 +4,7 @@ const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
 const Leave = require("../../model/leave");
 const moment = require("moment");
+const User = require("../../model/user");
 var Model = Leave;
 
 const fieldNames = ["status", "description"];
@@ -35,6 +36,15 @@ exports.applyLeave = asyncHandler(async (req, res) => {
 
 exports.edit = asyncHandler(async (req, res) => {
   try {
+    let leaveUser = await User.findById(res.record.userId);
+    if (leaveUser.role === 1 && req.user.role === 1) {
+      return Comman.setResponse(
+        res,
+        403,
+        false,
+        `You are not authorized to this route.`
+      );
+    }
     fieldNames.forEach((field) => {
       if (req.body[field] != null) res.record[field] = req.body[field];
     });
@@ -76,6 +86,7 @@ exports.all = asyncHandler(async (req, res) => {
             {
               $project: {
                 name: 1,
+                role: 1,
               },
             },
           ],
@@ -86,6 +97,9 @@ exports.all = asyncHandler(async (req, res) => {
         $addFields: {
           userName: {
             $first: "$userName.name",
+          },
+          userRole: {
+            $first: "$userName.role",
           },
         },
       },
@@ -252,12 +266,7 @@ exports.leaveDashboard = asyncHandler(async (req, res) => {
 exports.deleteLeave = asyncHandler(async (req, res, next) => {
   try {
     await Model.findByIdAndDelete(req.params.id);
-    return Comman.setResponse(
-      res,
-      200,
-      true,
-      "Leave delete successfully."
-    );
+    return Comman.setResponse(res, 200, true, "Leave delete successfully.");
   } catch (error) {
     console.log(error);
     return Comman.setResponse(
