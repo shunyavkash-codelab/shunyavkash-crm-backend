@@ -16,6 +16,7 @@ var taskRouter = require("./routes/task");
 var leaveRouter = require("./routes/leave");
 var salaryRouter = require("./routes/salary");
 var accountManagementRouter = require("./routes/accountManagement");
+var permissionRouter = require("./routes/permission");
 var { fileUploading } = require("./middleware/fileUploading");
 const { Result } = require("express-validator");
 
@@ -55,6 +56,7 @@ router.use("/task", taskRouter);
 router.use("/leave", leaveRouter);
 router.use("/salary", salaryRouter);
 router.use("/transaction", accountManagementRouter);
+router.use("/permission", permissionRouter);
 
 router.get("/country-code", async (req, res) => {
   let countryList = await Country.find();

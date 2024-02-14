@@ -6,8 +6,9 @@ const sendMail = require("../../utils/mailer");
 const User = require("../../model/user");
 const jwt = require("jsonwebtoken");
 const { default: mongoose } = require("mongoose");
-const { validationResult } = require("express-validator");
+const { validationResult, check } = require("express-validator");
 const { fileUploading } = require("../../middleware/fileUploading");
+const Permission = require("../../model/permission");
 var Model = User;
 
 // use edit user field
@@ -82,6 +83,23 @@ exports.addEmployee = asyncHandler(async (req, res, next) => {
       req.body.profile_img = await fileUploading(req.files.profile_img);
     }
     const registration = await Model.create(req.body);
+    let permissionObj;
+    if (req.body.role === 1) {
+      permissionObj = {
+        userId: registration._id,
+        member: { read: true, write: false },
+        client: { read: true, write: false },
+        project: { read: true, write: true },
+        leaveRequest: { read: true, write: false },
+      };
+    } else if (req.body.role === 2) {
+      permissionObj = {
+        userId: registration._id,
+        member: { read: true, write: false },
+        project: { read: true, write: false },
+      };
+    }
+    if (permissionObj) await Permission.create(permissionObj);
     const admin = await Model.findOne({ role: 0 });
     const subject = "Welcome to CRM - Your Login Credentials";
     const message = `<body
@@ -187,14 +205,14 @@ exports.login = asyncHandler(async (req, res, next) => {
         false,
         "Incorrect password or email."
       );
-
+    let permission = await Permission.findOne({ userId: check._id });
     delete check._doc.password;
     // generate tokens
     const accessToken = await check.generateAuthToken();
     check._doc.token = accessToken;
     check.invitationStatus = 1;
     await check.save();
-
+    check._doc.permission = permission;
     return Comman.setResponse(res, 200, true, "Login successfully", check);
   } catch (error) {
     console.log(error);
@@ -307,31 +325,6 @@ exports.getUserById = asyncHandler(async (req, res, next) => {
         _id: new mongoose.Types.ObjectId(req.params.id),
       },
     },
-    // {
-    //   $lookup: {
-    //     from: "users",
-    //     localField: "reference",
-    //     foreignField: "_id",
-    //     pipeline: [
-    //       {
-    //         $project: {
-    //           name: 1,
-    //         },
-    //       },
-    //     ],
-    //     as: "user",
-    //   },
-    // },
-    // {
-    //   $addFields: {
-    //     referenceName: {
-    //       $first: "$user.name",
-    //     },
-    //   },
-    // },
-    // {
-    //   $unset: "user",
-    // },
   ]);
   try {
     return Comman.setResponse(
