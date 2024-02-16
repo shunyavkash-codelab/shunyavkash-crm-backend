@@ -282,8 +282,8 @@ exports.getInvoiceById = asyncHandler(async (req, res, next) => {
 // delete invoice
 exports.deleteInvoice = asyncHandler(async (req, res, next) => {
   try {
-    await Model.updateOne(
-      { _id: req.params.id },
+    await Model.updateMany(
+      { _id: { $in: req.body.ids } },
       { isDeleted: true },
       { new: true }
     );

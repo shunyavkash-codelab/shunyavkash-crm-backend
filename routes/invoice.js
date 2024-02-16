@@ -68,12 +68,11 @@ router.get(
 
 // delete invoice
 router.delete(
-  "/:id",
+  "/",
   authenticateToken,
   auth(0),
-  Schema.getInvoiceByIdSchema,
+  Schema.deleteInvoiceByIdSchema,
   errorHandal,
-  getRecord(Model),
   deleteInvoice
 );
 
