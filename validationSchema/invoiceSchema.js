@@ -13,4 +13,8 @@ Schema.addSchema = [
 Schema.getInvoiceByIdSchema = [
   param("id").notEmpty().withMessage("id is a required field"),
 ];
+
+Schema.deleteInvoiceByIdSchema = [
+  check("ids").notEmpty().withMessage("ids is a required field"),
+];
 module.exports = Schema;
