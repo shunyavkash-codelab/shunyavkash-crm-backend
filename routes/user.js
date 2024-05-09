@@ -15,6 +15,7 @@ const {
   getManagers,
   getInvitedEmployees,
   memberDashboard,
+  jobRoles,
 } = require("../controller/v1/user");
 const Schema = require("../validationSchema/userSchema");
 const errorHandal = require("../middleware/comman").errorHandal;
@@ -82,6 +83,9 @@ router.get(
 
 // dashboard
 router.get("/dashboard", authenticateToken, memberDashboard);
+
+// get job roles
+router.get("/job-roles", authenticateToken, auth(0, 1, 2), jobRoles);
 
 // single get user
 router.get(

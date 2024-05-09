@@ -58,7 +58,7 @@ const invoiceSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["success", "pending"],
+      enum: ["paid", "unpaid", "pending"],
       default: "pending",
     },
     watermark: {
