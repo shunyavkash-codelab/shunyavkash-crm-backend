@@ -352,6 +352,9 @@ exports.getManagers = asyncHandler(async (req, res, next) => {
     if (req.query.search) {
       search.name = { $regex: req.query.search, $options: "i" };
     }
+    if (req.query.filter) {
+      search.designation = req.query.filter;
+    }
     const aggregate = [{ $match: search }];
     const result = await Pagination(req, res, Model, aggregate);
     return Comman.setResponse(
@@ -447,6 +450,9 @@ exports.getAllEmployees = asyncHandler(async (req, res, next) => {
     if (req.query.search) {
       search.name = { $regex: req.query.search, $options: "i" };
     }
+    if (req.query.filter) {
+      search.designation = req.query.filter;
+    }
     const aggregate = [{ $match: search }];
     const result = await Pagination(req, res, Model, aggregate);
     return Comman.setResponse(
@@ -501,6 +507,9 @@ exports.getInvitedEmployees = asyncHandler(async (req, res, next) => {
     let search = { isInvited: true, isDeleted: false };
     if (req.query.search) {
       search.name = { $regex: req.query.search, $options: "i" };
+    }
+    if (req.query.filter) {
+      search.designation = req.query.filter;
     }
     const aggregate = [{ $match: search }];
     const result = await Pagination(req, res, Model, aggregate);
@@ -586,6 +595,40 @@ exports.memberDashboard = asyncHandler(async (req, res, next) => {
       true,
       "Get Invited employee successfully.",
       result[0]
+    );
+  } catch (error) {
+    console.log(error);
+    return Comman.setResponse(
+      res,
+      400,
+      false,
+      "Something not right, please try again."
+    );
+  }
+});
+
+// // get Member dashboard
+exports.jobRoles = asyncHandler(async (req, res, next) => {
+  try {
+    const aggregate = [
+      {
+        $group: {
+          _id: "$designation",
+        },
+      },
+      {
+        $match: {
+          _id: { $ne: null },
+        },
+      },
+    ];
+    const result = await Model.aggregate(aggregate);
+    return Comman.setResponse(
+      res,
+      200,
+      true,
+      "Get job roles successfully.",
+      result
     );
   } catch (error) {
     console.log(error);
