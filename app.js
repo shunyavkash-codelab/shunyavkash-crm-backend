@@ -10,6 +10,7 @@ const fileUpload = require("express-fileupload");
 require("./db/db").connectDB();
 
 var router = require("./routes");
+require("./cron");
 
 var app = express();
 
