@@ -5,7 +5,6 @@ const Pagination = require("../../middleware/pagination");
 const Leave = require("../../model/leave");
 const moment = require("moment");
 const User = require("../../model/user");
-const Notification = require("../../model/notification");
 var Model = Leave;
 
 const fieldNames = ["status", "description"];

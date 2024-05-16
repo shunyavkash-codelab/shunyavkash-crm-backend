@@ -1,9 +1,7 @@
 const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
-const Pagination = require("../../middleware/pagination");
 const Task = require("../../model/task");
 const { default: mongoose } = require("mongoose");
-const { validationResult } = require("express-validator");
 var Model = Task;
 
 const fieldNames = ["taskName", "hours", "taskPriority", "perHourCharge"];

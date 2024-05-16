@@ -105,6 +105,27 @@ exports.get = asyncHandler(async (req, res, next) => {
         },
       },
       {
+        $lookup: {
+          from: "salaries",
+          localField: "itemId",
+          foreignField: "_id",
+          as: "salary_info",
+          pipeline: [
+            {
+              $project: {
+                date: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $unwind: {
+          path: "$salary_info",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
         $addFields: {
           textname: {
             $cond: [

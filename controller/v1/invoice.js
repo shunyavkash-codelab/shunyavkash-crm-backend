@@ -1,11 +1,9 @@
-const { validationResult } = require("express-validator");
 const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
 const Invoice = require("../../model/invoice");
 const InvoiceNumber = require("../../model/invoiceNumber");
 const moment = require("moment");
-const Notification = require("../../model/notification");
 const User = require("../../model/user");
 const Model = Invoice;
 
