@@ -5,6 +5,8 @@ const Pagination = require("../../middleware/pagination");
 const Project = require("../../model/project");
 const { default: mongoose } = require("mongoose");
 const { validationResult } = require("express-validator");
+const Notification = require("../../model/notification");
+const User = require("../../model/user");
 var Model = Project;
 
 // use edit project field
@@ -25,6 +27,15 @@ exports.add = asyncHandler(async (req, res, next) => {
   try {
     req.body.userId = req.user.id;
     const project = await Model.create(req.body);
+    const admin = await User.findOne({ role: 0 }).select("_id");
+    const notiObj = {
+      sender: req.user._id,
+      receiver: admin._id,
+      text: ` new project added in our company.`,
+      itemId: project._id,
+      type: "project",
+    };
+    await Comman.createNotification(notiObj);
     return Comman.setResponse(
       res,
       201,

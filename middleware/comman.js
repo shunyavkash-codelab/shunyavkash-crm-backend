@@ -2,6 +2,7 @@ const { validationResult } = require("express-validator");
 const Client = require("../model/client");
 const Invoice = require("../model/invoice");
 const InvoiceNumber = require("../model/invoiceNumber");
+const Notification = require("../model/notification");
 let Comman = {};
 
 Comman.setResponse = (res, code, flag, message, data = {}) => {
@@ -108,6 +109,15 @@ Comman.incrementInvoiceNumber = async () => {
       await InvoiceNumber.create({ year: year, number: 1 });
       return;
     }
+  } catch (error) {
+    console.log(error, "error");
+    return error;
+  }
+};
+Comman.createNotification = async (data) => {
+  try {
+    await Notification.create(data);
+    global.io.to(global.users[data.receiver]).emit("notification_count");
   } catch (error) {
     console.log(error, "error");
     return error;
