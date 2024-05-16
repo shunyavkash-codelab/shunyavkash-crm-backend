@@ -5,6 +5,8 @@ const Pagination = require("../../middleware/pagination");
 const Client = require("../../model/client");
 const { validationResult } = require("express-validator");
 const { fileUploading } = require("../../middleware/fileUploading");
+const Notification = require("../../model/notification");
+const User = require("../../model/user");
 var Model = Client;
 
 // use edit client field
@@ -57,6 +59,15 @@ exports.add = asyncHandler(async (req, res, next) => {
       }
     }
     const client = await Model.create(obj);
+    const admin = await User.findOne({ role: 0 }).select("_id");
+    const notiObj = {
+      sender: req.user._id,
+      receiver: admin._id,
+      text: ` client added in our company.`,
+      itemId: client._id,
+      type: "clients",
+    };
+    await Comman.createNotification(notiObj);
     return Comman.setResponse(
       res,
       201,

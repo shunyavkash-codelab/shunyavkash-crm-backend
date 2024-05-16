@@ -5,6 +5,8 @@ const Pagination = require("../../middleware/pagination");
 const Invoice = require("../../model/invoice");
 const InvoiceNumber = require("../../model/invoiceNumber");
 const moment = require("moment");
+const Notification = require("../../model/notification");
+const User = require("../../model/user");
 const Model = Invoice;
 
 exports.generateInvoiceNum = asyncHandler(async (req, res, next) => {
@@ -40,13 +42,22 @@ exports.addInvoice = asyncHandler(async (req, res, next) => {
     let currDate = new Date();
     let year = currDate.getFullYear();
     const invoiceNumber = await InvoiceNumber.findOne({ year: year });
-    await Model.create(req.body);
+    const invoice = await Model.create(req.body);
 
     let DatabaseNumber = invoiceNumber.number.toString().padStart(3, "0");
     let reqNumber = req.body.invoiceNumber.toString().slice(8);
     if (Number(DatabaseNumber) + 1 == reqNumber) {
       Comman.incrementInvoiceNumber();
     }
+    const admin = await User.findOne({ role: 0 }).select("_id");
+    const notiObj = {
+      sender: req.user._id,
+      receiver: admin._id,
+      text: ` new invoice generated.`,
+      itemId: invoice._id,
+      type: "invoices",
+    };
+    await Comman.createNotification(notiObj);
     return Comman.setResponse(res, 201, true, "Create invoice successfully");
   } catch (error) {
     console.log(error.code, "-----------------37");

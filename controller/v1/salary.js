@@ -9,6 +9,7 @@ const User = require("../../model/user");
 const Bank = require("../../model/bank");
 const Leave = require("../../model/leave");
 const numberToWords = require("number-to-words");
+const Notification = require("../../model/notification");
 var Model = Salary;
 
 // create salary
@@ -118,6 +119,17 @@ exports.add = asyncHandler(async (req, res, next) => {
       } else {
         salary = await Model.create(req.body);
       }
+      const notiObj = {
+        sender: req.user._id,
+        receiver: salary.employee,
+        text: `Your ${moment()
+          .subtract(1, "months")
+          .endOf("month")
+          .format("MMMM - YYYY")} month salary generated.`,
+        itemId: salary._id,
+        type: "salary",
+      };
+      await Comman.createNotification(notiObj);
       return Comman.setResponse(
         res,
         201,

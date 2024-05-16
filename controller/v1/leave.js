@@ -5,6 +5,7 @@ const Pagination = require("../../middleware/pagination");
 const Leave = require("../../model/leave");
 const moment = require("moment");
 const User = require("../../model/user");
+const Notification = require("../../model/notification");
 var Model = Leave;
 
 const fieldNames = ["status", "description"];
@@ -17,6 +18,15 @@ exports.applyLeave = asyncHandler(async (req, res) => {
       return Comman.setResponse(res, 409, false, "Your leave already applied.");
     }
     const applyLeave = await Model.create(req.body);
+    const admin = await User.findOne({ role: 0 }).select("_id");
+    const notiObj = {
+      sender: req.user._id,
+      receiver: admin._id,
+      text: ` apply leave for "${applyLeave.leaveType}".`,
+      itemId: applyLeave._id,
+      type: "leaves-requests",
+    };
+    await Comman.createNotification(notiObj);
     Comman.setResponse(
       res,
       201,
@@ -49,6 +59,14 @@ exports.edit = asyncHandler(async (req, res) => {
       if (req.body[field] != null) res.record[field] = req.body[field];
     });
     await Model.updateOne({ _id: req.params.id }, res.record, { new: true });
+    const notiObj = {
+      sender: req.user._id,
+      receiver: leaveUser._id,
+      text: `${req.body.status} your "${applyLeave.leaveType}" leave.`,
+      itemId: req.params.id,
+      type: "my-leave",
+    };
+    await Comman.createNotification(notiObj);
     return Comman.setResponse(
       res,
       200,
