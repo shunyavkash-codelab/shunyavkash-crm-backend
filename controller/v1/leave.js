@@ -21,7 +21,7 @@ exports.applyLeave = asyncHandler(async (req, res) => {
     const notiObj = {
       sender: req.user._id,
       receiver: admin._id,
-      text: ` apply leave for "${applyLeave.leaveType}".`,
+      text: ` apply for "${applyLeave.leaveType} leave".`,
       itemId: applyLeave._id,
       type: "leaves-requests",
     };
