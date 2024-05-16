@@ -3,9 +3,7 @@ const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
 const Client = require("../../model/client");
-const { validationResult } = require("express-validator");
 const { fileUploading } = require("../../middleware/fileUploading");
-const Notification = require("../../model/notification");
 const User = require("../../model/user");
 var Model = Client;
 

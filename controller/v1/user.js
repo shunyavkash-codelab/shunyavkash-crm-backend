@@ -6,7 +6,6 @@ const sendMail = require("../../utils/mailer");
 const User = require("../../model/user");
 const jwt = require("jsonwebtoken");
 const { default: mongoose } = require("mongoose");
-const { validationResult, check } = require("express-validator");
 const { fileUploading } = require("../../middleware/fileUploading");
 const Permission = require("../../model/permission");
 var Model = User;

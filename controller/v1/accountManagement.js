@@ -3,7 +3,6 @@ const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
 const Pagination = require("../../middleware/pagination");
 const accountManagement = require("../../model/accountManagement");
-const { validationResult } = require("express-validator");
 const { fileUploading } = require("../../middleware/fileUploading");
 const moment = require("moment");
 var Model = accountManagement;

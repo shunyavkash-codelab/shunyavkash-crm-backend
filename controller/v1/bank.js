@@ -1,6 +1,5 @@
 const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
-const bcrypt = require("bcrypt");
 const Pagination = require("../../middleware/pagination");
 const Bank = require("../../model/bank");
 const { default: mongoose } = require("mongoose");

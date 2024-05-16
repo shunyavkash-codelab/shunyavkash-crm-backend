@@ -1,11 +1,9 @@
 const asyncHandler = require("../../middleware/async");
 const Comman = require("../../middleware/comman");
-const bcrypt = require("bcrypt");
 const Pagination = require("../../middleware/pagination");
 const Project = require("../../model/project");
 const { default: mongoose } = require("mongoose");
 const { validationResult } = require("express-validator");
-const Notification = require("../../model/notification");
 const User = require("../../model/user");
 var Model = Project;
 
