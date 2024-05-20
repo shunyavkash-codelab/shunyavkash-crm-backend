@@ -9,12 +9,17 @@ exports.authenticateToken = (req, res, next) => {
   const token = authHeader && authHeader.split(" ")[1];
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, user) => {
-      if (err) return res.status(401).send({ message: err.message });
+      if (err)
+        return res
+          .status(401)
+          .send({ message: err.message, data: { logout: true } });
       let existUser = await User.findById(user.id);
       if (!existUser)
-        return res.status(401).send({ message: "User not found." });
+        return res
+          .status(401)
+          .send({ message: "User not found.", data: { logout: true } });
       if (!existUser.isActive)
-        return res.status(400).send({
+        return res.status(401).send({
           message:
             "Your account is deactivated. Please contact the admin for assistance.",
           data: { logout: true },
