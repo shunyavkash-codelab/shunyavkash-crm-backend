@@ -30,6 +30,7 @@ exports.editPermission = asyncHandler(async (req, res) => {
     if (!permission) {
       return Comman.setResponse(res, 200, true, "Record not found.");
     }
+    req.body.changed = true;
     changePermission = await Model.findByIdAndUpdate(permission._id, req.body, {
       new: true,
     });

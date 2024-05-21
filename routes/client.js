@@ -17,20 +17,20 @@ var Model = Client;
 router.post(
   "/add",
   authenticateToken,
-  auth(0),
+  auth(0, 1, 2),
   Schema.addSchema,
   errorHandal,
   add
 );
 
 // multiple get client
-router.get("/get-clients", authenticateToken, auth(0, 1), getClients);
+router.get("/get-clients", authenticateToken, auth(0, 1, 2), getClients);
 
 // single get client
 router.get(
   "/:id",
   authenticateToken,
-  auth(0, 1),
+  auth(0, 1, 2),
   Schema.getClientByIdSchema,
   errorHandal,
   getRecord(Model),
@@ -41,7 +41,7 @@ router.get(
 router.patch(
   "/:id",
   authenticateToken,
-  auth(0),
+  auth(0, 1, 2),
   Schema.getClientByIdSchema,
   errorHandal,
   getRecord(Model),

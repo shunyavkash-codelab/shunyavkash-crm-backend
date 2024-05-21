@@ -19,14 +19,14 @@ var Model = Project;
 router.post(
   "/add",
   authenticateToken,
-  auth(0, 1),
+  auth(0, 1, 2),
   Schema.addSchema,
   errorHandal,
   add
 );
 
 // edit project
-router.patch("/:id", authenticateToken, auth(0, 1), getRecord(Model), edit);
+router.patch("/:id", authenticateToken, auth(0, 1, 2), getRecord(Model), edit);
 
 // multiple get project
 router.get("/get-projects", authenticateToken, getProjects);

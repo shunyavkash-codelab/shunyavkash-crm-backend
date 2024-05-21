@@ -204,7 +204,11 @@ exports.login = asyncHandler(async (req, res, next) => {
         false,
         "Incorrect password or email."
       );
-    let permission = await Permission.findOne({ userId: check._id });
+    let permission = await Permission.findOneAndUpdate(
+      { userId: check._id },
+      { $set: { changed: false } },
+      { new: true }
+    );
     delete check._doc.password;
     // generate tokens
     const accessToken = await check.generateAuthToken();

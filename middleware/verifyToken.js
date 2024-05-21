@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../model/user");
+const Permission = require("../model/permission");
 
 exports.authenticateToken = (req, res, next) => {
   if (!req.headers["authorization"]) {
@@ -22,6 +23,12 @@ exports.authenticateToken = (req, res, next) => {
         return res.status(401).send({
           message:
             "Your account is deactivated. Please contact the admin for assistance.",
+          data: { logout: true },
+        });
+      let permission = await Permission.findOne({ userId: user.id });
+      if (permission.changed)
+        return res.status(401).send({
+          message: "Your session is expired. Please try to login.",
           data: { logout: true },
         });
       req.user = existUser;
