@@ -30,7 +30,7 @@ router.post(
 );
 
 // get all leaves
-router.get("/all", authenticateToken, auth(0, 1), all);
+router.get("/all", authenticateToken, auth(0, 1, 2), all);
 
 // get all approve leaves
 router.get("/approve", authenticateToken, auth(0, 1, 2), approveLeaves);
@@ -49,7 +49,7 @@ router.patch(
   "/:id",
   Schema.editLeaveSchema,
   authenticateToken,
-  auth(0, 1),
+  auth(0, 1, 2),
   errorHandal,
   getRecord(Model),
   edit

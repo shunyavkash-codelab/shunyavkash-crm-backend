@@ -24,6 +24,9 @@ const permissionSchema = new mongoose.Schema(
       type: Object,
       default: { read: false, write: false },
     },
+    changed: {
+      type: Boolean,
+    },
   },
 
   { versionKey: false }
