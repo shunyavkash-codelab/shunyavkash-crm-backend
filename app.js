@@ -17,6 +17,7 @@ const cors_urls = [
   "http://localhost:3000",
   "http://localhost:3001",
   "https://shunyavkash-crm-frontend.vercel.app",
+  "https://master.d2cz2tcpl9etgd.amplifyapp.com",
 ];
 
 app.use(
